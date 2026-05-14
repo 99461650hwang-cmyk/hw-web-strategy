@@ -1,0 +1,417 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  Sun, Newspaper, ShieldCheck, Users, ShoppingBag, 
+  ChevronRight, X, Clock, Copy, Check, 
+  PlayCircle, Eye, TrendingUp, Bell, AlertCircle, RefreshCw,
+  Flame, Bookmark, MessageSquare, BookOpen, Quote, Heart, Scale, ShieldAlert, FileText, ExternalLink
+} from 'lucide-react';
+
+// 실제 서비스에서는 이 데이터가 매일 08:30에 API를 통해 업데이트되는 구조입니다.
+const INITIAL_DATA = {
+  motivation: {
+    title: "성공을 부르는 아침의 야화(夜話)",
+    slides: [
+      { 
+        id: "m1",
+        image: "https://images.unsplash.com/photo-1544084944-15269ec7b5a0?q=80&w=1200&auto=format&fit=crop", 
+        text: "로마의 길이 2천 년을 버틴 '숨겨진 1미터'의 비밀",
+        subText: "화려한 돌길 아래, 아무도 보지 않는 곳에 1미터 깊이의 거대한 자갈층이 숨어있습니다.",
+        fullContent: `
+          <h3>[모닝 야화] 로마 도로는 왜 무너지지 않았을까?</h3>
+          <p>안녕하세요, 설계사님! 오늘은 우리가 걷는 '길'에 대한 흥미로운 이야기를 가져왔습니다. 로마 시대에 지어진 도로들은 2,000년이 지난 지금도 탱크가 지나갈 수 있을 만큼 튼튼하다고 하죠.</p>
+          <p>사람들은 겉으로 보이는 매끄러운 돌판이 대단하다고 말하지만, 진짜 비밀은 <strong>땅속 1미터</strong>에 있습니다. 로마인들은 길을 닦기 전, 무려 1미터 깊이로 땅을 파고 그 안에 네 겹의 서로 다른 자갈과 모래를 층층이 쌓았습니다. 비가 오면 배수가 잘되게 하고, 지표면의 충격을 분산시키기 위해서였죠.</p>
+          <p><strong>우리의 영업도 이와 같지 않을까요?</strong><br/>고객과 만나는 30분의 화려한 상담은 지표면의 돌판일 뿐입니다. 그 30분을 견고하게 지탱해주는 것은 고객을 만나기 전 1미터 깊이로 준비한 '상품 공부'와 '고객에 대한 진심 어린 고민'입니다.</p>
+          <p>보이지 않는 곳에서 층층이 쌓아 올린 여러분의 노력이, 2천 년을 버티는 로마의 길처럼 여러분의 커리어와 신뢰를 단단하게 지켜줄 것입니다. 오늘 하루, 보이지 않는 곳에서의 준비에 자부심을 느껴보세요!</p>
+        `
+      },
+      { 
+        id: "m2",
+        image: "https://images.unsplash.com/photo-1444464666168-49d633b867ad?q=80&w=1200&auto=format&fit=crop", 
+        text: "17년을 땅속에서 기다린 매미가 건네는 전략적 인내",
+        subText: "단 일주일의 울음을 위해 17년을 기다리는 매미. 그 기다림은 정체가 아니라 준비였습니다.",
+        fullContent: `
+          <h3>[모닝 야화] 17년 매미의 소수(Prime Number) 전략</h3>
+          <p>설계사님, 혹시 '17년 매미' 이야기를 들어보셨나요? 이 매미는 유충 상태로 땅속에서 무려 17년이라는 긴 세월을 인내합니다. 그리고 마침내 지상으로 올라와 뜨겁게 울고 생을 마감하죠.</p>
+          <p>과학자들은 왜 하필 '17'일까 연구했습니다. 알고 보니 17은 소수여서, 천적과 번식 주기가 겹치지 않게 하기 위한 <strong>가장 전략적인 선택</strong>이었다고 해요. 자신의 생존을 위해 수만 번의 계절을 견디며 가장 완벽한 타이밍을 기다린 셈입니다.</p>
+          <p><strong>기다림은 정체가 아니라 준비입니다.</strong><br/>영업을 하다 보면 공들인 고객의 반응이 없어서 지칠 때가 있죠. 하지만 그것은 멈춘 것이 아니라, 여러분이 심은 신뢰의 씨앗이 땅속에서 '가장 완벽한 타이밍'을 위해 영글어가는 과정입니다. 오늘 당장 결과가 보이지 않더라도 실망하지 마세요. 여러분은 지금 가장 전략적인 인내를 하고 계신 겁니다.</p>
+        `
+      },
+      { 
+        id: "m3",
+        image: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=1200&auto=format&fit=crop", 
+        text: "모소 대나무가 4년 동안 단 3cm만 자라는 이유",
+        subText: "4년 동안 성장을 멈춘 듯 보이지만, 땅속에서는 수백 미터의 뿌리를 뻗고 있었습니다.",
+        fullContent: `
+          <h3>[모닝 야화] 폭발적 성장을 위한 보이지 않는 확장</h3>
+          <p>중국에 서식하는 '모소 대나무'는 씨앗이 뿌려진 후 4년 동안 딱 3cm만 자랍니다. 얼핏 보면 죽은 것이 아닐까 걱정될 정도죠. 하지만 5년째 되는 날부터는 하루에 30cm씩, 6주 만에 15미터 이상으로 폭발적인 성장을 합니다.</p>
+          <p>비결은 <strong>보이지 않는 4년</strong>에 있었습니다. 대나무는 땅 위로 싹을 틔우지 않는 동안, 땅속 깊은 곳에서 수만 미터에 달하는 뿌리를 사방으로 뻗어 나가고 있었습니다. 엄청난 성장을 감당할 수 있는 단단한 기초를 마련한 것이죠.</p>
+          <p><strong>지금 성과가 더디게 느껴지시나요?</strong><br/>그것은 멈춘 것이 아니라, 여러분의 커리어가 더 높이 뻗어 나가기 위해 보이지 않는 곳에서 '전문성'과 '고객 네트워크'라는 뿌리를 확장하고 있는 시기입니다. 5년째의 모소 대나무처럼, 곧 찾아올 여러분의 폭발적 성장기를 기대하며 오늘을 응원합니다!</p>
+        `
+      }
+    ]
+  },
+  economy: {
+    title: "☕ '점심값 1만원 시대', 고객과 나누는 생활 물가 이야기",
+    summary: "런치플레이션 시대, 고객들의 지갑을 지켜주는 작은 습관 하나가 큰 신뢰를 만듭니다.",
+    fullContent: `
+      <h3>생활 경제 레터: "요즘 점심 먹기 무서우시죠?"</h3>
+      <p>설계사님, 요즘 식당 메뉴판 보기가 겁난다는 분들이 참 많습니다. 이른바 <strong>'런치플레이션(Lunch + Inflation)'</strong>이 우리 일상을 파고들었기 때문인데요.</p>
+      <p>물가가 오르면서 필요한 혜택만 영리하게 골라 쓰는 '체리슈머'들이 급증하고 있습니다. 점심시간 편의점 도시락 매출이 40% 이상 늘었고, 유통기한 임박 상품을 파는 '라스트 오더' 앱 사용자가 폭발적으로 늘었죠.</p>
+      <p>고객님이 "보험료가 부담스럽다"고 하실 때, 무조건 안 된다고 하기보다 이런 생활 이야기를 먼저 꺼내보세요. "요즘 점심값 아끼려고 편의점 가시는 분들이 많더라고요. 그렇게 아낀 소중한 돈이 정작 큰 아픔이 닥쳤을 때 병원비로 다 나가버리면 너무 허무하지 않을까요?"</p>
+    `
+  },
+  newsList: [
+    { 
+      category: "CLAIMS", 
+      title: "⚖️ [실무] '일상생활배상책임'과 전동 킥보드 사고의 경계", 
+      summary: "분조위 결정 사례: PM(개인형 이동장치) 사고가 면책되는 법적 근거는?", 
+      sourceUrl: "https://www.fss.or.kr",
+      fullContent: `
+        <h3>[보상 레터] 킥보드 사고, 왜 일배책으로 안 될까요?</h3>
+        <p>설계사님, 최근 공유 킥보드 사고로 일상생활배상책임(일배책) 청구가 급증하고 있습니다. 하지만 대부분 <strong>면책(지급 거절)</strong> 통보를 받게 되는데요, 고객님께 설명할 명확한 근거를 정리해 드립니다.</p>
+        <p><strong>1. 핵심 쟁점: PM은 '차'인가 '일상생활'인가?</strong><br/>대법원 판례와 도로교통법에 따르면 전동 킥보드는 '원동기장치자전거'에 해당합니다. 보험 약관상 '차량의 소유, 사용, 관리' 중 발생한 사고는 일배책에서 면책 사항입니다.</p>
+        <p><strong>2. 분쟁조정사례 (제2022-XX호)</strong><br/>금융감독원 분쟁조정위원회는 "전동 킥보드는 인력에 의하지 않고 전동기에 의해 구동되는 '자동차 등'에 해당하므로, 이를 운전하던 중 발생한 사고는 약관상 배제되는 '차량 사고'에 해당한다"고 결정했습니다.</p>
+        <p><strong>3. 상담 팁</strong><br/>고객님께 "바퀴 달린 장치는 기본적으로 전용 보험이 필요합니다"라고 안내하시며, 일배책의 한계를 명확히 인지시키는 것이 향후 민원을 방지하는 길입니다.</p>
+      ` 
+    },
+    { 
+      category: "CLAIMS", 
+      title: "🏥 [판례] 아랫집 누수 사고, '우리 집' 수리비도 보상 가능할까?", 
+      summary: "대법원 2012다XXXXX 판결로 본 '손해방지의무' 비용의 범위.", 
+      sourceUrl: "https://scourt.go.kr",
+      fullContent: `
+        <h3>[보상 레터] 누수 사고와 손해방지비용의 비밀</h3>
+        <p>누수가 발생하면 아랫집 피해 복구뿐만 아니라, 우리 집 바닥을 뜯는 비용도 보상받을 수 있는지 문의가 많죠? 대법원 판례를 통해 정리해 드립니다.</p>
+        <p><strong>1. 대법원 판례 (2012다XXXXX)</strong><br/>판례에 따르면, 자기 집 안에서 이루어진 수리비라 하더라도 그것이 <strong>'타인에게 가해진 손해의 확대를 방지하기 위한 긴급하고도 불가피한 조치'</strong>였다면 보험사가 이를 보상해야 한다고 판시했습니다.</p>
+        <p><strong>2. 실무 체크포인트</strong><br/>단순히 노후된 배관을 교체하는 '수리' 목적이 아니라, 아랫집으로 흐르는 물을 당장 멈추게 하기 위한 '방지' 목적임을 증빙해야 합니다. 손해사정 시 현장 사진과 전문가 소견서가 중요한 이유입니다.</p>
+      ` 
+    },
+    { 
+      category: "HANWHA", 
+      title: "🧡 한화손보 '여성 건강보험' 시그니처 특약 딥다이브", 
+      summary: "배타적 사용권 획득 특약의 상세 구조와 설계 전략.", 
+      fullContent: `
+        <h3>[한화 뉴스레터] 여성의 생애를 설계합니다</h3>
+        <p>한화손해보험의 '시그니처 여성 건강보험'이 업계 1위를 지키는 이유는 단순한 마케팅이 아닙니다. 국내 최초 '여성 전용 R&D 센터'의 연구 결과가 상품에 녹아있기 때문입니다.</p>
+        <p>특히 <strong>난임 치료 후 성공 축하금</strong>이나 <strong>임신/출산기 보험료 납입유예</strong> 등은 타사가 쉽게 흉내 낼 수 없는 한화만의 고유 가치입니다. "우리는 당신의 삶을 공부합니다"라는 메시지로 다가가 보세요.</p>
+      ` 
+    },
+    { 
+      category: "FSS", 
+      title: "⚖️ 금감원 가이드라인: 보험금 지급 지연 방지 및 모니터링 강화", 
+      summary: "정당한 사유 없는 지급 지연 시 보험사 제재 수준 상향.", 
+      sourceUrl: "https://www.fss.or.kr",
+      fullContent: `
+        <h3>[정책 레터] 빠른 보상이 곧 최고의 영업입니다</h3>
+        <p>금융감독원에서 최근 '보험금 지급 문화 개선'을 위해 강력한 가이드라인을 발표했습니다. 핵심은 '정당한 사유 없는 30일 초과 지급 지연 금지'입니다.</p>
+        <p>앞으로는 보험사가 추가 조사를 명목으로 무분별하게 지급을 미룰 경우 과태료 등 강력한 제재를 받게 됩니다. 우리 설계사님들이 고객님의 보험금을 챙겨줄 때 더 든든한 법적 보호막이 생긴 셈입니다.</p>
+      ` 
+    }
+  ]
+};
+
+export default function App() {
+  const [data, setData] = useState(INITIAL_DATA);
+  const [selectedNews, setSelectedNews] = useState(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [copySuccess, setCopySuccess] = useState(false);
+  const [todayKST, setTodayKST] = useState("");
+
+  useEffect(() => {
+    const updateKST = () => {
+      const now = new Date();
+      const kstOffset = 9 * 60; // KST는 UTC+9
+      const kstDate = new Date(now.getTime() + (now.getTimezoneOffset() + kstOffset) * 60000);
+      
+      const year = kstDate.getFullYear();
+      const month = String(kstDate.getMonth() + 1).padStart(2, '0');
+      const day = String(kstDate.getDate()).padStart(2, '0');
+      
+      setTodayKST(`${year}. ${month}. ${day}`);
+    };
+
+    updateKST();
+    const timer = setInterval(updateKST, 60000); 
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const slideDuration = 8000; 
+    const interval = 50;
+    const step = (interval / slideDuration) * 100;
+
+    const timer = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          setCurrentSlide(s => (s + 1) % data.motivation.slides.length);
+          return 0;
+        }
+        return prev + step;
+      });
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [data.motivation.slides.length]);
+
+  const handleCopy = (text) => {
+    const cleanText = text.replace(/<[^>]*>/g, '').trim(); 
+    navigator.clipboard.writeText(cleanText).then(() => {
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    });
+  };
+
+  const CategoryTag = ({ type }) => {
+    const configs = {
+      HANWHA: { label: "한화 소식", color: "bg-orange-500", icon: Sun },
+      FSS: { label: "금감원 정책", color: "bg-blue-600", icon: ShieldCheck },
+      CLAIMS: { label: "보상 실무 리포트", color: "bg-red-600", icon: Scale },
+      ECONOMY: { label: "생활 경제", color: "bg-emerald-600", icon: ShoppingBag },
+      MOTIVATION: { label: "모닝 야화", color: "bg-rose-500", icon: Heart },
+    };
+    const config = configs[type] || configs.HANWHA;
+    const Icon = config.icon;
+
+    return (
+      <span className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider ${config.color}`}>
+        <Icon size={12} />
+        {config.label}
+      </span>
+    );
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FDFDFD] text-gray-900 font-sans pb-16 selection:bg-orange-100">
+      <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100">
+        <div className="max-w-2xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
+              <Sun size={20} className="text-white" />
+            </div>
+            <span className="font-black text-xl tracking-tighter uppercase">Hanwha <span className="text-orange-500 font-medium">Insight</span></span>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-100">
+            <Clock size={14} className="text-orange-500" />
+            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-tight">
+              {todayKST} | 08:30 AM Updated
+            </span>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-2xl mx-auto px-6 py-10 space-y-16">
+        <header className="space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-orange-100 rounded-lg text-orange-600">
+              <Flame size={14} />
+            </div>
+            <span className="text-[11px] font-black text-orange-600 uppercase tracking-[0.25em]">Morning Insight Letter</span>
+          </div>
+          <h2 className="text-4xl font-black leading-tight tracking-tight text-gray-900">
+            설계사님을 위한<br/><span className="text-orange-500">오늘의 아침 레터</span>
+          </h2>
+          <p className="text-gray-400 font-medium text-sm leading-relaxed max-w-md">
+            {todayKST} 오전 8시 30분, 손해사정 판례부터 한화 소식까지 가장 깊이 있는 전문 정보를 업데이트했습니다.
+          </p>
+        </header>
+
+        {}
+        <section className="relative h-[550px] rounded-[3.5rem] overflow-hidden shadow-2xl shadow-gray-300/40 bg-black">
+          <div className="absolute top-8 left-0 w-full px-8 flex gap-2 z-20">
+            {data.motivation.slides.map((_, idx) => (
+              <div key={idx} className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-orange-500 transition-all duration-100"
+                  style={{ width: idx === currentSlide ? `${progress}%` : idx < currentSlide ? '100%' : '0%' }}
+                />
+              </div>
+            ))}
+          </div>
+
+          {data.motivation.slides.map((slide, idx) => (
+            <div 
+              key={idx}
+              className={`absolute inset-0 transition-all duration-1000 transform ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}
+            >
+              <img src={slide.image} className="w-full h-full object-cover" alt="" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+              
+              <div className="absolute bottom-0 left-0 p-12 w-full space-y-8">
+                <div className="space-y-4">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-bold text-white uppercase tracking-widest">
+                    <Quote size={12} className="text-orange-400" /> Morning Hidden Story
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black text-white leading-tight break-keep">{slide.text}</h3>
+                  <p className="text-white/80 text-base font-medium leading-relaxed break-keep line-clamp-3">{slide.subText}</p>
+                </div>
+                
+                <div className="flex items-center gap-3 pt-4">
+                  <button 
+                    onClick={() => setSelectedNews({ ...slide, category: 'MOTIVATION', title: slide.text })}
+                    className="flex-1 flex items-center justify-center gap-3 px-8 py-4 bg-white text-gray-900 rounded-2xl font-black text-sm hover:bg-orange-500 hover:text-white transition-all shadow-xl active:scale-95"
+                  >
+                    <PlayCircle size={20} /> 스토리 전체 읽기
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {}
+        <section className="space-y-12">
+          <div className="space-y-6">
+            <div className="flex items-center gap-2 text-emerald-600">
+              <div className="p-2 bg-emerald-50 rounded-xl"><TrendingUp size={20} /></div>
+              <h3 className="font-black text-2xl tracking-tight text-gray-900">생활 경제 인사이트</h3>
+            </div>
+            <div 
+              onClick={() => setSelectedNews({ ...data.economy, category: 'ECONOMY' })}
+              className="group p-10 bg-white border border-gray-100 rounded-[3.5rem] shadow-xl shadow-gray-200/40 cursor-pointer transition-all hover:-translate-y-1"
+            >
+              <div className="relative z-10 space-y-6">
+                <CategoryTag type="ECONOMY" />
+                <h4 className="text-2xl font-black text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors">{data.economy.title}</h4>
+                <p className="text-gray-500 text-base font-medium leading-relaxed">{data.economy.summary}</p>
+                <div className="pt-4 flex items-center gap-2 text-xs font-black text-emerald-600 uppercase tracking-widest">
+                  상세 인사이트 보기 <ChevronRight size={16} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {}
+          <div className="space-y-6">
+             <div className="flex items-center gap-2 text-gray-900">
+              <div className="p-2 bg-gray-100 rounded-xl"><BookOpen size={20} /></div>
+              <h3 className="font-black text-2xl tracking-tight text-gray-900">보험업계 데일리 리포트</h3>
+            </div>
+            <div className="grid grid-cols-1 gap-6">
+              {data.newsList.map((news, idx) => (
+                <div 
+                  key={idx}
+                  onClick={() => setSelectedNews(news)}
+                  className="group flex flex-col md:flex-row items-start gap-8 p-10 bg-white rounded-[3.5rem] border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all cursor-pointer"
+                >
+                  <div className={`shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center transition-all ${
+                    news.category === 'CLAIMS' ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'
+                  } group-hover:bg-orange-500 group-hover:text-white`}>
+                    {news.category === 'HANWHA' ? <Sun size={28} /> : 
+                     news.category === 'FSS' ? <ShieldCheck size={28} /> : 
+                     <Scale size={28} />}
+                  </div>
+                  <div className="flex-1 space-y-4">
+                    <CategoryTag type={news.category} />
+                    <h4 className="text-xl font-black text-gray-900 group-hover:text-orange-600 transition-colors break-keep">{news.title}</h4>
+                    <p className="text-sm text-gray-400 font-medium leading-relaxed italic line-clamp-1">{news.summary}</p>
+                  </div>
+                  <ChevronRight size={20} className="text-gray-300 hidden md:block" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <footer className="py-20 text-center border-t border-gray-100">
+           <div className="space-y-4">
+              <Sun size={24} className="mx-auto text-gray-200" />
+              <p className="text-[11px] font-black text-gray-400 uppercase tracking-[0.4em]">Hanwha General Insurance</p>
+              <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">© {todayKST.split('.')[0]} Morning Insight System. Updated 08:30 AM KST.</p>
+            </div>
+        </footer>
+      </main>
+
+      {}
+      <DetailModal 
+        isOpen={!!selectedNews} 
+        content={selectedNews} 
+        onClose={() => setSelectedNews(null)} 
+        onCopy={handleCopy}
+      />
+
+      {}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { font-family: 'Pretendard', sans-serif; background-color: #FDFDFD; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        .article-body h3 { font-size: 1.6rem; font-weight: 900; color: #111827; margin: 3rem 0 1.5rem; border-left: 6px solid #F97316; padding-left: 1.5rem; line-height: 1.2; }
+        .article-body p { font-size: 1.15rem; line-height: 1.9; color: #374151; margin-bottom: 2rem; word-break: keep-all; text-align: justify; }
+        .article-body strong { color: #111827; font-weight: 900; background: linear-gradient(180deg,transparent 60%, #FFEDD5 60%); }
+        .article-body ul { list-style: none; padding: 0; margin-bottom: 2rem; }
+        .article-body li { position: relative; padding-left: 1.5rem; margin-bottom: 1rem; line-height: 1.7; color: #4B5563; font-size: 1.1rem; }
+        .article-body li::before { content: '•'; color: #F97316; position: absolute; left: 0; font-weight: bold; }
+      `}} />
+    </div>
+  );
+}
+
+const DetailModal = ({ isOpen, content, onClose, onCopy }) => {
+  const [copied, setCopied] = useState(false);
+  if (!isOpen || !content) return null;
+
+  const handleCopy = () => {
+    onCopy(content.fullContent);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 lg:p-12">
+      <div className="absolute inset-0 bg-gray-950/80 backdrop-blur-md" onClick={onClose} />
+      <div className="relative bg-white w-full max-w-4xl h-full md:h-auto md:max-h-[90vh] overflow-hidden rounded-t-[3rem] md:rounded-[3.5rem] shadow-2xl animate-in slide-in-from-bottom-20 duration-500 flex flex-col">
+        <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-100 px-8 py-6 flex items-center justify-between z-20">
+          <div className="flex items-center gap-4">
+            <span className={`w-3 h-3 rounded-full ${content.category === 'CLAIMS' ? 'bg-red-600' : 'bg-orange-500'}`} />
+            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{content.category} Report</span>
+          </div>
+          <button onClick={onClose} className="p-3 hover:bg-gray-100 rounded-2xl transition-all text-gray-400"><X size={28} /></button>
+        </div>
+        
+        <div className="flex-1 overflow-y-auto p-10 md:p-16 lg:p-20 custom-scrollbar">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-5xl font-black text-gray-900 leading-[1.1] mb-12 break-keep">{content.title}</h2>
+            
+            <div className="article-body" dangerouslySetInnerHTML={{ __html: content.fullContent }} />
+            
+            {content.sourceUrl && (
+              <div className="mt-12 p-8 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white rounded-xl text-gray-400 shadow-sm"><FileText size={20} /></div>
+                  <div>
+                    <p className="text-sm font-black text-gray-900">관련 판례 및 근거 자료 원문</p>
+                    <p className="text-xs text-gray-400">공신력 있는 기관의 상세 리포트를 확인하세요.</p>
+                  </div>
+                </div>
+                <a 
+                  href={content.sourceUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl text-xs font-black hover:bg-black transition-all"
+                >
+                  원문 확인하기 <ExternalLink size={14} />
+                </a>
+              </div>
+            )}
+
+            <div className="mt-8 p-6 bg-red-50 border-l-4 border-red-500 text-sm text-red-700 font-bold leading-relaxed">
+               ⚠️ 필수 고지 사항: 본 내용은 일반적인 사례 및 판례를 바탕으로 작성되었습니다. <br/>
+               실제 보상 여부 및 지급 금액은 개별 가입한 상품의 약관 및 심사 결과에 따라 달라질 수 있습니다.
+            </div>
+
+            <div className="mt-20 pt-12 border-t border-gray-100">
+               <button onClick={handleCopy} className="w-full flex items-center justify-center gap-3 py-5 bg-orange-500 text-white font-black rounded-[2rem] hover:bg-orange-600 transition-all shadow-2xl shadow-orange-200 active:scale-95">
+                 {copied ? <Check size={20} /> : <Copy size={20} />}
+                 {copied ? "복사 완료!" : "본문 내용 복사하기 (상담 자료용)"}
+               </button>
+               <p className="mt-4 text-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                 * 보안 지침에 따라 외부 공유는 제한되며 본인 상담용으로만 활용 가능합니다.
+               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
