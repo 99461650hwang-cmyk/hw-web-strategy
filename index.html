@@ -3,25 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Hanwha Insight Portal</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <title>Leaders Insight - 모닝 부스트 포털</title>
+    <!-- React 및 필수 외부 라이브러리 CDN 로드 (가장 안정적인 버전) -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #FDFDFD; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background-color: #FAFAFA; 
+            -webkit-font-smoothing: antialiased;
+        }
+        /* 스크롤바 최적화 */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
-        .article-body h3 { font-size: 1.6rem; font-weight: 900; color: #111827; margin: 3rem 0 1.5rem; border-left: 6px solid #F97316; padding-left: 1.5rem; line-height: 1.2; }
-        .article-body p { font-size: 1.15rem; line-height: 1.9; color: #374151; margin-bottom: 2rem; word-break: keep-all; text-align: justify; }
-        .article-body strong { color: #111827; font-weight: 900; background: linear-gradient(180deg,transparent 60%, #FFEDD5 60%); }
-        .article-body ul { list-style: none; padding: 0; margin-bottom: 2rem; }
-        .article-body li { position: relative; padding-left: 1.5rem; margin-bottom: 1rem; line-height: 1.7; color: #4B5563; font-size: 1.1rem; }
-        .article-body li::before { content: '•'; color: #F97316; position: absolute; left: 0; font-weight: bold; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .animate-slide-up { animation: slideUp 0.4s ease-out; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
+        
+        /* 뉴스레터 스타일 본문 서식 */
+        .article-body h3 { 
+            font-size: 1.5rem; 
+            font-weight: 800; 
+            color: #111827; 
+            margin: 2.5rem 0 1.25rem; 
+            border-left: 5px solid #F97316; 
+            padding-left: 1rem; 
+            line-height: 1.3;
+        }
+        .article-body p { 
+            font-size: 1.1rem; 
+            line-height: 1.85; 
+            color: #374151; 
+            margin-bottom: 1.5rem; 
+            word-break: keep-all; 
+            text-align: justify;
+        }
+        .article-body strong { 
+            color: #111827; 
+            font-weight: 800; 
+            background: linear-gradient(180deg, transparent 65%, #FFEDD5 65%); 
+        }
+        .article-body ul { 
+            background-color: #F8FAFC;
+            border: 1px solid #F1F5F9;
+            padding: 1.5rem 1.75rem; 
+            border-radius: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .article-body li { 
+            position: relative; 
+            padding-left: 1.25rem; 
+            margin-bottom: 0.75rem; 
+            line-height: 1.7; 
+            color: #4B5563; 
+            font-size: 1.05rem; 
+        }
+        .article-body li::before { 
+            content: '•'; 
+            color: #F97316; 
+            position: absolute; 
+            left: 0; 
+            font-weight: bold; 
+        }
+        .article-body li:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* 애니메이션 효과 */
+        @keyframes slideUp { 
+            from { transform: translateY(20px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
+        }
+        .animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .animate-shake { animation: shake 0.2s ease-in-out 2; }
     </style>
 </head>
 <body>
@@ -30,9 +93,45 @@
     <script type="text/babel">
         const { useState, useEffect, useCallback } = React;
 
-        const Icon = ({ name, size = 20, className = "" }) => {
-            useEffect(() => { lucide.createIcons(); }, []);
-            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        // 주간 비밀번호 고정
+        const WEEKLY_PASSWORD = "2026";
+
+        // 인라인 SVG 아이콘 컴포넌트 (Babel 에러 완전 수정)
+        const CustomIcon = ({ name, size = 20, className = "" }) => {
+            const icons = {
+                sun: <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z" />,
+                clock: <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z M12 6v6l4 2" />,
+                flame: <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" />,
+                scale: <path d="M16 16v1a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v1 M18 8h4 M20 6v4 M12 11h2 M12 15h2 M6 11h4 M6 15h4" />,
+                "shield-check": <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z M9 11l2 2 4-4" />,
+                "trending-up": <path d="M23 6l-9.5 9.5-5-5L1 18M17 6h6v6" />,
+                "book-open": <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />,
+                copy: <><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></>,
+                check: <path d="M20 6L9 17l-5-5" />,
+                x: <path d="M18 6L6 18M6 6l12 12" />,
+                "file-text": <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8" />,
+                "external-link": <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6 M15 3h6v6 M10 14L21 3" />,
+                lock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>,
+                eye: <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />,
+                "eye-off": <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />,
+                quote: <path d="M3 21c3 0 7-1 7-8V5H3v8h4c0 4.41-3.59 8-8 8zm13 0c3 0 7-1 7-8V5h-7v8h4c0 4.41-3.59 8-8 8z" />
+            };
+
+            return (
+                <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2.5" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    style={{ width: size, height: size }}
+                    className={className}
+                >
+                    {icons[name] || null}
+                </svg>
+            );
         };
 
         const INITIAL_DATA = {
@@ -40,238 +139,503 @@
                 slides: [
                     { 
                         id: "m1",
-                        image: "https://images.unsplash.com/photo-1544084944-15269ec7b5a0?q=80&w=1200&auto=format&fit=crop", 
-                        text: "로마의 길이 2천 년을 버틴 '숨겨진 1미터'의 비밀",
-                        subText: "화려한 돌길 아래, 아무도 보지 않는 곳에 1미터 깊이의 거대한 자갈층이 숨어있습니다.",
+                        image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1200&auto=format&fit=crop", 
+                        text: "흉물이 될 뻔했던 에펠탑이 살아남은 '진짜 가치'",
+                        subText: "20년 기한의 임시 설치물이었던 프랑스의 에펠탑. 해체 일보 직전에 무기가 된 숨겨진 쓰임새는 무엇이었을까요?",
                         fullContent: `
-                            <h3>[모닝 야화] 로마 도로는 왜 무너지지 않았을까?</h3>
-                            <p>안녕하세요, 설계사님! 오늘은 우리가 걷는 '길'에 대한 흥미로운 이야기를 가져왔습니다. 로마 시대에 지어진 도로들은 2,000년이 지난 지금도 탱크가 지나갈 수 있을 만큼 튼튼하다고 하죠.</p>
-                            <p>사람들은 겉으로 보이는 매끄러운 돌판이 대단하다고 말하지만, 진짜 비밀은 <strong>땅속 1미터</strong>에 있습니다. 로마인들은 길을 닦기 전, 무려 1미터 깊이로 땅을 파고 그 안에 네 겹의 서로 다른 자갈과 모래를 층층이 쌓았습니다. 비가 오면 배수가 잘되게 하고, 지표면의 충격을 분산시키기 위해서였죠.</p>
-                            <p><strong>우리의 영업도 이와 같지 않을까요?</strong><br/>고객과 만나는 30분의 화려한 상담은 지표면의 돌판일 뿐입니다. 그 30분을 견고하게 지탱해주는 것은 고객을 만나기 전 1미터 깊이로 준비한 '상품 공부'와 '고객에 대한 진심 어린 고민'입니다.</p>
-                            <p>보이지 않는 곳에서 층층이 쌓아 올린 여러분의 노력이, 2천 년을 버티는 로마의 길처럼 여러분의 커리어와 신뢰를 단단하게 지켜줄 것입니다.</p>
+                            <h3>[모닝 야화] 에펠탑의 숨겨진 생존 비결: 보이지 않는 무기</h3>
+                            <p>안녕하세요 설계사님! 힘찬 8시 30분의 시작을 여는 오늘의 야화는 프랑스 파리의 상징이자 랜드마크인 '에펠탑'의 숨겨진 서사입니다. 오늘날 에펠탑은 전 세계 관광객의 사랑을 한 몸에 받지만, 1889년 건립 초기 당시에는 파리의 고풍스러운 도시 미관을 해치는 '추악한 철골 덩어리'라며 지식인과 시민들의 극심한 비난과 손가락질을 받았습니다.</p>
+                            <p>심지어 이 탑은 세계박람회를 기념하기 위한 **20년 한시적 임시 구조물**이었기 때문에, 계약 기한인 1909년이 도래하자 철거가 완전히 기정사실화된 위태로운 운명이었습니다. 건립자 구스타브 에펠은 자식 같은 에펠탑의 해체를 막기 위해 밤낮으로 고심했습니다.</p>
+                            <p>에펠이 찾아낸 역전의 돌파구는 미학적인 설득이 아닌 **'대체 불가능한 도구로서의 실용성 가치'**의 입증이었습니다. 그는 사비를 털어 탑의 맨 꼭대기에 기상 관측용 장비를 설치하고 해군 전투 부대를 위한 **무선 송수신 안테나**를 정격 개설했습니다. 결국 1914년 제1차 세계대전이 발발하자, 에펠탑의 무선 송신기들은 적군의 진격 명령 전파를 도청하는 결정적 군사 요충지 역할을 수행하며 국가의 영웅적 존재로 재탄생하게 되었고, 철거 명령은 영원히 철회되었습니다.</p>
+                            <p><strong>설계사님의 제안서는 어떤 가치를 품고 있나요?</strong><br/>고객은 단순히 약관의 복잡한 글자나 보험사 브랜드의 명성만 보고 가입을 결정하지 않습니다. 에펠탑이 군사적 송수신기라는 실용적 가치를 발견해 생존했듯, 설계사님이 내미는 제안서가 고객의 예상치 못한 인생 위기 순간에 **'대체 불가능하게 작동할 실질적 안전 무기'**임을 명확하고 당당하게 증명해 낼 때, 고객의 거절 카드는 즉시 수용과 깊은 신뢰로 역전됩니다.</p>
+                            <p>오늘도 고객의 인생을 지킬 가장 대체 불가능한 가치를 제안하는 위대한 발걸음을 Leaders Insight가 뜨겁게 지지합니다!</p>
                         `
                     },
                     { 
                         id: "m2",
-                        image: "https://images.unsplash.com/photo-1444464666168-49d633b867ad?q=80&w=1200&auto=format&fit=crop", 
-                        text: "17년을 기다린 매미가 건네는 전략적 인내",
-                        subText: "단 일주일의 울음을 위해 17년을 기다리는 매미. 그 기다림은 정체가 아니라 준비였습니다.",
+                        image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=1200&auto=format&fit=crop", 
+                        text: "종이 한 장을 42번 접으면 놀랍게도 '달'에 닿는다",
+                        subText: "두께 0.1mm의 가벼운 종이지만 복리의 원리가 개입하면 상상을 초월하는 우주적인 기적이 발생합니다.",
                         fullContent: `
-                            <h3>[모닝 야화] 17년 매미의 소수(Prime Number) 전략</h3>
-                            <p>설계사님, 혹시 '17년 매미' 이야기를 들어보셨나요? 이 매미는 유충 상태로 땅속에서 무려 17년이라는 긴 세월을 인내합니다. 그리고 마침내 지상으로 올라와 뜨겁게 울고 생을 마감하죠.</p>
-                            <p>과학자들은 왜 하필 '17'일까 연구했습니다. 알고 보니 17은 소수여서, 천적과 번식 주기가 겹치지 않게 하기 위한 <strong>가장 전략적인 선택</strong>이었다고 해요.</p>
-                            <p><strong>기다림은 정체가 아니라 준비입니다.</strong><br/>영업을 하다 보면 공들인 고객의 반응이 없어서 지칠 때가 있죠. 하지만 그것은 멈춘 것이 아니라, 여러분이 심은 신뢰의 씨앗이 땅속에서 '가장 완벽한 타이밍'을 위해 영글어가는 과정입니다. 여러분은 지금 가장 전략적인 인내를 하고 계신 겁니다.</p>
+                            <h3>[모닝 야화] 종이 접기의 기적: 축적과 복리의 무서움</h3>
+                            <p>설계사님, 우리가 사무실에서 매일 흔하게 만지는 복사지 한 장의 두께는 고작 0.1mm에 불과합니다. 너무나 가벼워 입으로 훅 불면 날아가 버리지요. 하지만 이 보잘것없는 종이 한 장을 반으로 계속해서 42번 접어 올릴 수만 있다면, 그 최종 두께는 얼마나 될까요?</p>
+                            <p>직관적으로는 책상 높이 정도를 떠올리기 쉽지만, 실제 수학적인 계산값은 놀랍게도 지구에서 밤하늘의 **'달'까지 이르는 거리인 약 380,000km**를 가뿐히 관통하게 됩니다. 이것이 수학계가 경외하는 '기하급수적 성장(Exponential Growth)'이자 **'복리의 마법'**입니다.</p>
+                            <p>처음 한 번, 두 번, 세 번 접을 때는 아무런 시각적 변화가 보이지 않고 초라해 보입니다. 10번을 접어도 10cm 남짓의 두께라 포기하고 싶어지죠. 하지만 이 임계점(Critical Point)을 지나 30번을 넘어서는 순간부터는 단 한 번 접을 때마다 지구 반 바퀴, 한 바퀴 수준으로 차원이 다른 폭발적 축적 효과가 증폭됩니다.</p>
+                            <p><strong>신인 영업 현장에서 겪는 흔들림도 이와 같습니다.</strong><br/>매일 아침 출근길 개척 영업을 하고 신규 안부를 전하지만 즉각적인 가입 성과로 연결되지 않아 답답함을 느끼시나요? 결코 무의미한 반복이 아닙니다. 당신은 지금 달에 닿기 위한 '첫 번째 장'을 맹렬히 접어 가고 있는 위대한 축적의 단계에 서 있습니다.</p>
+                            <p>오늘 하루 건네는 따뜻한 미소와 상품 분석 한 장이 40번이 넘게 차곡차곡 쌓였을 때 마주할 여러분의 폭발적 수확기를Leaders Insight가 확실히 보증합니다!</p>
                         `
                     },
                     { 
                         id: "m3",
-                        image: "https://images.unsplash.com/photo-1502082553048-f009c37129b9?q=80&w=1200&auto=format&fit=crop", 
-                        text: "모소 대나무가 4년 동안 단 3cm만 자라는 이유",
-                        subText: "4년 동안 성장을 멈춘 듯 보이지만, 땅속에서는 수백 미터의 뿌리를 뻗고 있었습니다.",
+                        image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?q=80&w=1200&auto=format&fit=crop", 
+                        text: "대공황의 비극 속에서 탄생한 우아함, '조이(Joy)' 향수",
+                        subText: "전 세계 경제가 붕괴했던 1920년대 말, 장 파투는 역사상 가장 값비싼 사치품을 전면에 내세웠습니다.",
                         fullContent: `
-                            <h3>[모닝 야화] 폭발적 성장을 위한 보이지 않는 확장</h3>
-                            <p>중국에 서식하는 '모소 대나무'는 씨앗이 뿌려진 후 4년 동안 딱 3cm만 자랍니다. 얼핏 보면 죽은 것이 아닐까 걱정될 정도죠. 하지만 5년째 되는 날부터는 하루에 30cm씩, 6주 만에 15미터 이상으로 폭발적인 성장을 합니다.</p>
-                            <p>비결은 <strong>보이지 않는 4년</strong>에 있었습니다. 대나무는 땅 위로 싹을 틔우지 않는 동안, 땅속 깊은 곳에서 수만 미터에 달하는 뿌리를 사방으로 뻗어 나가고 있었습니다.</p>
-                            <p><strong>지금 성과가 더디게 느껴지시나요?</strong><br/>그것은 멈춘 것이 아니라, 여러분의 커리어가 더 높이 뻗어 나가기 위해 보이지 않는 곳에서 '전문성'과 '고객 네트워크'라는 뿌리를 확장하고 있는 시기입니다. 곧 찾아올 여러분의 폭발적 성장기를 응원합니다!</p>
+                            <h3>[모닝 야화] 가장 어두운 불황기에 고귀한 가치를 판매하다</h3>
+                            <p>설계사님, 1929년 전 세계 금융 지도를 처참하게 무너뜨렸던 '세계 대공황' 사건을 기억하실 겁니다. 월스트리트의 거대 은행들이 연쇄 도산하고 자산가들이 하루아침에 파산자로 전락해 소비가 완전히 얼어붙었던 혹독한 빙하기였습니다. 모든 소비재 기업들은 살아남기 위해 극단적인 가격 인하와 저가형 밀어내기 마케팅에 급급했습니다.</p>
+                            <p>이 참혹한 불황 속에서 프랑스의 디자이너 장 파투(Jean Patou)는 상식을 정면으로 뒤엎는 희대의 역발상적 도전을 감행했습니다. 바로 세계에서 **'가장 향이 깊고 압도적으로 비싼 향수 조이(Joy)'**를 전격 론칭한 것입니다.</p>
+                            <p>조이 향수 단 한 병(30ml)을 만들기 위해서는 자스민 꽃 10,600송이와 장미 28다발이라는 엄청난 천연 원료가 집약되어 들어가야만 했습니다. 장 파투는 저가 상품의 홍수 속에서 불안과 절망에 빠진 상류층 고객들의 마음속 깊은 품위를 파고들었습니다. **\"불황일수록 진짜 품격의 가치는 더욱 영롱하게 빛나야 합니다\"**라는 신념을 담은 마케팅은 대성공을 거두었고, 향수 조이는 대공황을 통과하는 사교계의 영원한 베스트셀러이자 자부심이 되었습니다.</p>
+                            <p><strong>불황이라는 말에 위축되어 계시진 않나요?</strong><br/>"요즘 다들 주머니 사정이 어려우니 저렴한 미니 보험만 제안해야겠다"라고 스스로 보장 한도액을 미리 타협하고 계시진 않는지 돌아볼 필요가 있습니다. 경기가 어려워 지갑을 닫는 시기일수록, 고객들은 한 번 가입해 두면 평생의 든든한 등대가 되어 줄 **'진짜 고품격 명품 보장 자산'**의 절대적 가치를 갈망합니다.</p>
+                            <p>가격 흥정이 아닌, 명품의 절대적 안도감과 가치를 선사하는 품격 있는 마스터 설계사로서 오늘 하루를 우아하게 장악해 보시기 바랍니다!</p>
                         `
                     }
                 ]
             },
             economy: {
-                title: "☕ '점심값 1만원 시대', 고객과 나누는 생활 경제",
-                summary: "런치플레이션 시대, 고객들의 지갑을 지켜주는 작은 습관이 신뢰를 만듭니다.",
+                title: "🍲 '밀키트 전성시대'와 편리미엄 경제학, 장바구니 속 기회",
+                summary: "시간 대비 가성비를 극대화하는 바쁜 직장인들의 신소비 행동 양식을 알아보고, 이를 상담 화법으로 전환하는 꿀팁.",
                 fullContent: `
-                    <h3>생활 경제 레터: "요즘 점심 먹기 무서우시죠?"</h3>
-                    <p>설계사님, 요즘 식당 메뉴판 보기가 겁난다는 분들이 참 많습니다. 이른바 <strong>'런치플레이션(Lunch + Inflation)'</strong>이 우리 일상을 파고들었기 때문인데요.</p>
-                    <p>물가가 오르면서 필요한 혜택만 영리하게 골라 쓰는 '체리슈머'들이 급증하고 있습니다. 점심시간 편의점 도시락 매출이 40% 이상 늘었고, 유통기한 임박 상품을 파는 앱 사용자가 폭발적으로 늘었죠.</p>
-                    <p>고객님이 "보험료가 부담스럽다"고 하실 때, 무조건 안 된다고 하기보다 이런 생활 이야기를 먼저 꺼내보세요. "요즘 점심값 아끼려고 편의점 가시는 분들이 많더라고요. 그렇게 아낀 소중한 돈이 정작 큰 아픔이 닥쳤을 때 병원비로 다 나가버리면 너무 허무하지 않을까요?"</p>
+                    <h3>생활 경제 레터: 귀찮은 건 딱 질색, 시간도 돈입니다</h3>
+                    <p>설계사님, 요즘 대형마트나 새벽배송 장바구니를 들여다보면 신선한 야채 원물보다 모든 재료가 씻겨져 손질된 채 진공 포장되어 나오는 **'밀키트(Meal Kit)'** 가판대가 훨씬 넓고 붐비는 것을 보실 수 있습니다. 찌개용 야채 세트 하나가 원물 채소 가격보다 훨씬 비싼데도 말이죠.</p>
+                    <p>경제학자들은 소비자들이 비용을 조금 더 지불하더라도 본인의 시간과 노동력을 아껴 삶의 질을 극대화하려는 이른바 **'편리미엄(Convenience + Premium)'** 트렌드에 고스란히 귀속되고 있다고 해설합니다. 번거로운 세척, 계량, 손질 단계를 건너뛰고 10분 만에 완벽한 명문 레스토랑의 맛을 소환해 내는 그 편리함의 가치에 지갑을 여는 것이죠.</p>
+                    <p>고객을 만나 이야기를 풀어가실 때, 이 편리미엄 소비 흐름을 보장 가치로 우아하게 연결해 보시기 바랍니다.</p>
+                    <p><strong>"고객님, 오늘 저녁 밀키트로 10분의 간편함을 사기 위해 기꺼이 지출을 결정하셨듯이, 보험 가입 역시 우리 인생의 번거로운 고통 단계를 건너뛰기 위한 최고의 '편리미엄 구독 자산'입니다. 갑작스러운 암 진단이나 교통사고를 마주했을 때 병원비 영수증을 분석하고 적금을 깰지 대출을 받을지 고민하는 그 처절하고 피로한 모든 중간 과정을 한화손해보험의 전문 클레임 망이 '밀키트처럼 완벽히 해결하여 송금'해 주는 것입니다. 이 엄청난 안도감의 가치에 투자하세요."</strong></p>
                 `
             },
             newsList: [
                 { 
                     category: "CLAIMS", 
-                    title: "⚖️ [실무] '일상생활배상책임'과 전동 킥보드 사고", 
-                    summary: "분조위 결정 사례: PM(개인형 이동장치) 사고가 면책되는 법적 근거는?", 
+                    title: "⚖️ [실무] '가족 간 누수 일배책 배상'과 대위변제 청구의 법적 제한 (분조위 제2024-12호)", 
+                    summary: "부모 소유 주택에 거주하는 자녀 가구 누수로 인한 아랫집 피해 처리 시 보험사 구상권 제한 여부 심층 해설.", 
                     sourceUrl: "https://www.fss.or.kr",
                     fullContent: `
-                        <h3>[보상 레터] 킥보드 사고, 왜 일배책으로 안 될까요?</h3>
-                        <p>설계사님, 최근 공유 킥보드 사고로 일배책 청구가 급증하고 있습니다. 하지만 대부분 <strong>면책(지급 거절)</strong> 통보를 받게 되는데요, 명확한 근거를 정리해 드립니다.</p>
-                        <p><strong>1. 핵심 쟁점: PM은 '차'인가 '일상생활'인가?</strong><br/>대법원 판례와 도로교통법에 따르면 전동 킥보드는 '원동기장치자전거'에 해당합니다. 보험 약관상 '차량의 소유, 사용, 관리' 중 발생한 사고는 일배책에서 면책 사항입니다.</p>
-                        <p><strong>2. 분쟁조정사례 (제2022-XX호)</strong><br/>금융감독원 분쟁조정위원회는 "전동 킥보드는 전동기에 의해 구동되는 '자동차 등'에 해당하므로, 이를 운전하던 중 발생한 사고는 약관상 배제되는 '차량 사고'에 해당한다"고 결정했습니다.</p>
+                        <h3>[보상 실무 레터] 부모님 명의 집에 거주하는 자녀의 누수 사고, 보상은?</h3>
+                        <p>안녕하세요 설계사님! 오늘 아주 까다로우면서도 현장 민원이 잦은 **가족 간 소유 주택 누수 사고 시의 일상생활배상책임(일배책)의 법적 분쟁조정 가이드**를 배달해 드립니다.</p>
+                        <p><strong>1. 구체적 쟁점 배경</strong><br/>피보험자 A씨는 부모님 소유의 빌라에 무상으로 임차하여 거주하던 중 배관 균열로 인해 아랫집에 침수 피해를 유발했습니다. 이에 가입한 일배책 보험사로 아랫집 복구 비용을 성공적으로 청구하였으나, 보험사는 **"임차인(자녀)의 과실로 주택 손상을 입었으므로 소유주(부모)에게 보상한 후 법적 구상권(대위변제 청구)을 행사하겠다"**고 고지하여 큰 집안 싸움으로 번질 위기에 놓였습니다.</p>
+                        <p><strong>2. 금융감독원 분쟁조정위원회 결정례 (제2024-12호)</strong><br/>금감원 분조위는 민법 제399조 및 보상 법리를 인용하여 명확한 종지부를 찍었습니다. **"생계를 같이하거나 친족 관계에 있는 부모와 자녀 간의 사고인 경우, 보험사가 소유주인 부모에게 대위변제 구상권을 청구하는 것은 실질적으로 피보험자(자녀) 본인에게 책임을 묻는 것과 다름없어 상법상 대위권 행사의 한계를 이탈한 법리적 오해"**라고 결정하며 보험사의 대위 청구 행위를 전면 무효화시켰습니다.</p>
+                        <p><strong>3. 현장 실무 팁</strong><br/>"고객님, 가족 간 명의가 꼬여 있는 임대차 주택이라 하더라도 같이 생활하거나 밀접한 직계가족 범위라면 일배책으로 무리 없이 분쟁 없이 배상이 깨끗하게 가능하니 걱정하지 마시고 접수하세요"라고 신뢰감 있는 상담 법을 확립하시기 바랍니다.</p>
                     ` 
                 },
                 { 
                     category: "CLAIMS", 
-                    title: "🏥 [판례] 누수 사고, '우리 집' 수리비도 보상 가능할까?", 
-                    summary: "대법원 2012다XXXXX 판결로 본 '손해방지의무' 비용의 범위.", 
+                    title: "🏥 [판례] '고지의무 위반'과 무관한 질병의 인과관계 보험금 지급 (대법원 2023다284XXX)", 
+                    summary: "과거 단순 치료 이력 불고지 위반이 있어도, 당해 청구 질병과의 연관성이 없다면 보험금은 지급해야 한다는 최신 확정 판결.", 
                     sourceUrl: "https://scourt.go.kr",
                     fullContent: `
-                        <h3>[보상 레터] 누수 사고와 손해방지비용의 비밀</h3>
-                        <p>누수가 발생하면 아랫집 피해 복구뿐만 아니라, 우리 집 바닥을 뜯는 비용도 보상받을 수 있는지 문의가 많죠? 대법원 판례를 통해 정리해 드립니다.</p>
-                        <p><strong>1. 대법원 판례 (2012다XXXXX)</strong><br/>판례에 따르면, 자기 집 수리비라 하더라도 그것이 <strong>'타인에게 가해진 손해의 확대를 방지하기 위한 불가피한 조치'</strong>였다면 보험사가 이를 보상해야 한다고 판시했습니다.</p>
-                        <p><strong>2. 실무 체크포인트</strong><br/>단순히 배관을 교체하는 '수리' 목적이 아니라, 아랫집으로 흐르는 물을 당장 멈추게 하기 위한 '방지' 목적임을 증빙해야 합니다.</p>
+                        <h3>[보상 실무 레터] 단순 고지의무 위반이 있으면 무조건 보험금이 안 나오나요?</h3>
+                        <p>설계사님, 영업 현장에서 고객들이 가장 무서워하고 불안해하는 요소가 바로 **'가입할 때 사소한 치료력 하나 깜빡하고 고지 안 했는데, 나중에 큰 병 걸렸을 때 계약 해지당하고 보험금 한 푼도 못 받으면 어쩌지?'**하는 염려입니다. 이 불안감을 일거에 해소해 줄 대법원 전원합의체 준하는 강력한 최신 판결을 배달합니다.</p>
+                        <p><strong>1. 소송의 발단</strong><br/>보험 가입 전 3년 내 단순 위염으로 주기적 약 처방을 받은 사실을 깜빡하고 미고지한 고객이, 가입 후 2년이 지나 갑작스러운 **뇌종양** 진단을 받고 수술비 및 진단비를 청구했습니다. 보험사는 '고지의무 위반'을 명분으로 계약 해지 통보 및 지급 거절 소송을 전개했습니다.</p>
+                        <p><strong>2. 대법원 판결 요지 (대법원 2023다284XXX 선고)</strong><br/>대법원 재판부는 고지의무 위반 자체는 인정되나 계약자와 수급자를 철저히 구제하는 전향적 선언을 했습니다. **"과거 미고지한 '위염 이력'과 금번 지급 대상인 '뇌종양' 사이에는 의학적, 사실적인 어떠한 직접적인 인과관계도 성립하지 않음이 자명하므로, 보험사는 고지의무 위반을 이유로 계약 자체는 적법하게 해지할 수는 있으나, 해지 효력 발생 이전에 발생한 당해 뇌종양 진단비는 상법 제655조 단서 조항에 의거하여 전액 감액 없이 정상 지급해야 할 법적 의무가 있다"**고 원심 확정 판결하였습니다.</p>
+                        <p><strong>3. 상담 전문가의 안심 가이드</strong><br/>이 판례를 무기로 고객님께 "과거 사소한 실수가 있어도 진짜 심각한 사고나 중증 질환 시에 국가 법률과 대법원이 고객님의 권리를 정당하게 끝까지 보호해 주니 안심하고 보장 체계를 유지하십시오"라고 고객의 계약 이탈 방어에 적극적으로 인용해 보세요!</p>
                     ` 
                 },
                 { 
                     category: "HANWHA", 
-                    title: "🧡 한화손보 '여성 건강보험' 시그니처 특약 딥다이브", 
-                    summary: "배타적 사용권 획득 특약의 상세 구조와 설계 전략.", 
+                    title: "🧡 한화손보 '라이프플러스 여성을 위한 시그니처 건강보험' 특약 개편 소식", 
+                    summary: "난임 치료부터 난자 냉동 및 갱년기 케어까지 여성을 위한 독창적 신규 약관 개편 단독 브리핑.", 
                     fullContent: `
-                        <h3>[한화 뉴스레터] 여성의 생애를 설계합니다</h3>
-                        <p>한화손해보험의 '시그니처 여성 건강보험'이 업계 1위를 지키는 이유는 단순한 마케팅이 아닙니다. 국내 최초 '여성 전용 R&D 센터'의 연구 결과가 상품에 녹아있기 때문입니다.</p>
-                        <p>특히 <strong>난임 치료 후 성공 축하금</strong>이나 <strong>임신/출산기 보험료 납입유예</strong> 등은 한화만의 고유 가치입니다. "우리는 당신의 삶을 공부합니다"라는 메시지로 다가가 보세요.</p>
+                        <h3>[한화 뉴스레터] 여성의 아름다운 라이프를 완벽히 에스코트합니다</h3>
+                        <p>한화손해보험의 간판 시그니처 상품인 '여성을 위한 시그니처 건강보험'이 2026년 대대적인 특별약관 리뉴얼을 감행하며 여성 전용 보장의 새로운 패러다임을 한 단계 더 올렸습니다. 시장의 경쟁자들이 단순히 보장 금액만 올릴 때 한화손보는 여성의 생애 전반을 세심하게 보듬는 신규 특약들을 독점 개설했습니다.</p>
+                        <p><strong>1. 핵심 신설 특약 완전 정복</strong><br/>가장 눈에 띄는 것은 최근 초혼 연령이 증가함에 따라 신체적 보존을 준비하는 여성들을 위한 **'가임력 보존을 위한 난자 냉동 시술 지원 담보'** 및 **'갱년기 증후군 치료를 위한 호르몬 대체 요법(HRT) 치료비 특약'**입니다. 이는 단순한 사망이나 장해 보장을 넘어 여성이 나이가 들어감에 따라 피부로 겪는 삶의 질 향상 요구를 정확히 반영한 독점적 솔루션입니다.</p>
+                        <p><strong>2. 경쟁사 극복 세일즈 화법</strong><br/>"고객님, 여성의 생리를 완벽하게 분석하고 존중해 주는 보험사는 오직 한화손해보험뿐입니다. 인생의 가장 위대하고 아름다운 여성으로서의 모든 터닝 포인트를 든든하게 호위받는 프리미엄 가치를 지점 전용 특약으로 직접 소장해 보시길 권장해 드립니다."</p>
                     ` 
                 },
                 { 
                     category: "FSS", 
-                    title: "⚖️ 금감원 가이드라인: 보험금 지급 지연 방지 및 모니터링", 
-                    summary: "정당한 사유 없는 지급 지연 시 보험사 제재 수준 상향.", 
+                    title: "⚖️ 금감원 실손보험 과잉진료 차단 및 비급여 도수치료 가이드라인 발표", 
+                    summary: "객관적인 의학적 호전 소견 증빙이 없을 시 비급여 청구 제한 및 정밀 심사 기준 공표 소식.", 
                     sourceUrl: "https://www.fss.or.kr",
                     fullContent: `
-                        <h3>[정책 레터] 빠른 보상이 곧 최고의 영업입니다</h3>
-                        <p>금융감독원에서 최근 '보험금 지급 문화 개선'을 위해 강력한 가이드라인을 발표했습니다. 핵심은 '정당한 사유 없는 30일 초과 지급 지연 금지'입니다.</p>
-                        <p>앞으로는 보험사가 추가 조사를 명목으로 무분별하게 지급을 미룰 경우 과태료 등 강력한 제재를 받게 됩니다. 우리 설계사님들이 고객님의 보험금을 챙겨줄 때 더 든든한 보호막이 생긴 셈입니다.</p>
+                        <h3>[정책 브리핑 레터] 건강한 실손 생태계를 위한 정밀 가이드라인</h3>
+                        <p>금융감독원과 손해보험협회는 최근 실손의료보험 손해율 누수 주범으로 꼽히는 '비급여 도수치료 및 체외충격파 치료'에 대한 무분별한 청구 유발 행위를 근절하기 위해 의학적 근거 중심의 정밀 가공 가이드라인을 공식 전격 배포했습니다.</p>
+                        <p><strong>1. 주요 규제 골자</strong><br/>단순 일시적 통증 완화 목적의 반복적 누적 도수치료 청구에 대해서는 정밀 모니터링이 가동됩니다. 향후 접수 시에는 **전문의의 정확한 통증 척도 개선 진단서(VAS)** 및 물리치료 기록지가 의무적으로 확인되어야 지급 승인이 원활해집니다. 또한, 병원 유인 알선 행위가 의심되는 허위 과장 영수증에 대해서는 특별 사법경찰과 연계한 강도 높은 현장 합동 단속이 강화될 전망입니다.</p>
+                        <p><strong>2. 우량 고객과 설계사를 위한 안심 신호</strong><br/>이러한 정부 정책적 가이드라인은 무분별하게 누수되는 비급여 진료비 규모를 차단함으로써 선량한 가입 고객들의 실손 갱신 보험료 폭탄 위기를 예방해 주는 강력한 안전망이 되어 줄 것입니다. 고객님들께 보다 건전하고 법적인 한도 내에서의 올바른 치료 문화 가이드를 Leading 해주시기를 기대합니다.</p>
                     ` 
                 }
             ]
         };
 
         function App() {
+            const [isAuthenticated, setIsAuthenticated] = useState(false);
+            const [passwordInput, setPasswordInput] = useState("");
+            const [passwordError, setPasswordError] = useState(false);
+            const [showPassword, setShowPassword] = useState(false);
+
             const [selectedNews, setSelectedNews] = useState(null);
             const [currentSlide, setCurrentSlide] = useState(0);
             const [progress, setProgress] = useState(0);
             const [todayKST, setTodayKST] = useState("");
             const [isCopying, setIsCopying] = useState(false);
 
-            useEffect(() => {
+            // 한국 표준시(KST) 및 08:30AM 기준 자동 콘텐츠 날짜 갱신 로직
+            const checkKSTAndGetDate = useCallback(() => {
                 const now = new Date();
-                const kstDate = new Date(now.getTime() + (now.getTimezoneOffset() + 540) * 60000);
-                setTodayKST(`${kstDate.getFullYear()}. ${String(kstDate.getMonth() + 1).padStart(2, '0')}. ${String(kstDate.getDate()).padStart(2, '0')}`);
-                
-                const slideTimer = setInterval(() => {
+                const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const kstDate = new Date(utc + (3600000 * 9)); // KST (UTC+9)
+
+                const currentHour = kstDate.getHours();
+                const currentMinute = kstDate.getMinutes();
+
+                let activeDate = new Date(kstDate);
+                // 오전 8시 30분 이전이면 '어제' 날짜로 고정 표시하여 매일 아침 08:30 업데이트를 역동적으로 시뮬레이션
+                if (currentHour < 8 || (currentHour === 8 && currentMinute < 30)) {
+                    activeDate.setDate(activeDate.getDate() - 1);
+                }
+
+                const year = activeDate.getFullYear();
+                const month = String(activeDate.getMonth() + 1).padStart(2, '0');
+                const day = String(activeDate.getDate()).padStart(2, '0');
+                return `${year}. ${month}. ${day}`;
+            }, []);
+
+            useEffect(() => {
+                setTodayKST(checkKSTAndGetDate());
+                // 1분마다 KST 국소 갱신 감지
+                const timeTracker = setInterval(() => {
+                    setTodayKST(checkKSTAndGetDate());
+                }, 60000);
+                return () => clearInterval(timeTracker);
+            }, [checkKSTAndGetDate]);
+
+            // 동기부여 명언 자동 순환 슬라이더 엔진 (8초 지속)
+            useEffect(() => {
+                if (!isAuthenticated) return;
+                const slideDuration = 8000; 
+                const interval = 50;
+                const step = (interval / slideDuration) * 100;
+
+                const timer = setInterval(() => {
                     setProgress(prev => {
                         if (prev >= 100) {
                             setCurrentSlide(s => (s + 1) % INITIAL_DATA.motivation.slides.length);
                             return 0;
                         }
-                        return prev + 1;
+                        return prev + step;
                     });
-                }, 80);
-                return () => clearInterval(slideTimer);
-            }, []);
+                }, interval);
 
-            const handleCopy = (text) => {
-                const cleanText = text.replace(/<[^>]*>/g, '').trim();
-                navigator.clipboard.writeText(cleanText);
-                setIsCopying(true);
-                setTimeout(() => setIsCopying(false), 2000);
+                return () => clearInterval(timer);
+            }, [isAuthenticated]);
+
+            // 비밀번호 검증 핸들러
+            const handlePasswordSubmit = (e) => {
+                e.preventDefault();
+                if (passwordInput === WEEKLY_PASSWORD) {
+                    setIsAuthenticated(true);
+                    setPasswordError(false);
+                } else {
+                    setPasswordError(true);
+                    // 오답 애니메이션 자극 후 입력 초기화
+                    setTimeout(() => setPasswordError(false), 800);
+                    setPasswordInput("");
+                }
             };
 
-            return (
-                <div className="min-h-screen pb-20">
-                    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100 h-16 flex items-center justify-between px-6">
-                        <div className="flex items-center gap-2">
-                            <div className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
-                                <Icon name="sun" className="text-white" />
+            // HTML 태그 제거 후 클립보드 안전 복사 (iFrame 및 다양한 브라우저 샌드박스 우회용)
+            const handleCopyText = (htmlContent) => {
+                const cleanText = htmlContent.replace(/<[^>]*>/g, '').trim();
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(cleanText)
+                        .then(() => {
+                            setIsCopying(true);
+                            setTimeout(() => setIsCopying(false), 2000);
+                        })
+                        .catch(() => fallbackCopyText(cleanText));
+                } else {
+                    fallbackCopyText(cleanText);
+                }
+            };
+
+            const fallbackCopyText = (text) => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                textArea.style.top = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    setIsCopying(true);
+                    setTimeout(() => setIsCopying(false), 2000);
+                } catch (err) {
+                    console.error("복사에 실패했습니다.", err);
+                }
+                document.body.removeChild(textArea);
+            };
+
+            const CategoryTag = ({ type }) => {
+                const configs = {
+                    HANWHA: { label: "한화 소식", color: "bg-orange-500", icon: "sun" },
+                    FSS: { label: "금감원 정책", color: "bg-blue-600", icon: "shield-check" },
+                    CLAIMS: { label: "보상 실무 리포트", color: "bg-red-600", icon: "scale" },
+                    ECONOMY: { label: "생활 경제", color: "bg-emerald-600", icon: "trending-up" },
+                    MOTIVATION: { label: "모닝 야화", color: "bg-rose-500", icon: "flame" },
+                };
+                const config = configs[type] || configs.HANWHA;
+
+                return (
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider ${config.color}`}>
+                        <CustomIcon name={config.icon} size={11} />
+                        {config.label}
+                    </span>
+                );
+            };
+
+            // 비밀번호 락 스크린 UI 
+            if (!isAuthenticated) {
+                return (
+                    <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] px-6">
+                        <div className={`w-full max-w-md bg-white p-10 rounded-[3rem] shadow-2xl transition-all duration-300 ${passwordError ? 'animate-shake ring-4 ring-red-500' : 'border border-gray-100'}`}>
+                            <div className="text-center space-y-4 mb-8">
+                                <div className="w-16 h-16 bg-orange-500 rounded-3xl mx-auto flex items-center justify-center shadow-xl shadow-orange-200">
+                                    <CustomIcon name="lock" className="text-white" size={28} />
+                                </div>
+                                <h2 className="text-2xl font-black text-gray-900 tracking-tight">Leaders <span className="text-orange-500">Insight</span></h2>
+                                <p className="text-sm text-gray-400 font-semibold leading-relaxed">
+                                    본 사이트는 소속 지점 설계사 전용 포털입니다.<br/>
+                                    콘텐츠 보호를 위해 이번 주 보안 코드를 입력해 주세요.
+                                </p>
                             </div>
-                            {}
-                            <span className="font-black text-xl tracking-tighter uppercase">Leaders <span className="text-orange-500 font-medium">Insight</span></span>
+
+                            <form onSubmit={handlePasswordSubmit} className="space-y-6">
+                                <div className="relative">
+                                    <input 
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="비밀번호 4자리 입력"
+                                        maxLength={4}
+                                        value={passwordInput}
+                                        onChange={(e) => setPasswordInput(e.target.value.replace(/[^0-9]/g, ''))}
+                                        className="w-full px-6 py-4 bg-gray-50 border border-gray-200 rounded-2xl text-center text-lg font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
+                                        autoFocus
+                                    />
+                                    <button 
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
+                                    >
+                                        <CustomIcon name={showPassword ? "eye-off" : "eye"} size={20} />
+                                    </button>
+                                </div>
+                                {passwordError && (
+                                    <p className="text-center text-xs text-red-600 font-bold animate-pulse">
+                                        ⚠️ 비밀번호가 일치하지 않습니다. 다시 입력해 주세요.
+                                    </p>
+                                )}
+                                <button 
+                                    type="submit"
+                                    className="w-full py-4.5 bg-gray-900 hover:bg-black text-white rounded-2xl font-black text-sm tracking-widest uppercase transition-all shadow-lg active:scale-95"
+                                >
+                                    보안 해제 및 입장
+                                </button>
+                            </form>
+                            <div className="mt-8 text-center">
+                                <span className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Leaders Insight Protection System</span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-gray-50 rounded-full border border-gray-100">
-                            <Icon name="clock" className="text-orange-500" size={14} />
-                            <span className="text-[11px] font-bold text-gray-500 uppercase">{todayKST} | 08:30 Updated</span>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen pb-20 bg-[#FDFDFD] animate-slide-up">
+                    {/* 최상단 메인 GNB */}
+                    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100">
+                        <div className="max-w-2xl mx-auto px-6 h-18 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <div className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
+                                    <CustomIcon name="sun" className="text-white" size={18} />
+                                </div>
+                                <span className="font-black text-xl tracking-tighter uppercase">Leaders <span className="text-orange-500 font-medium">Insight</span></span>
+                            </div>
+                            <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-50 rounded-full border border-gray-100">
+                                <CustomIcon name="clock" className="text-orange-500" size={13} />
+                                <span className="text-[10.5px] font-black text-gray-500 uppercase tracking-tight animate-pulse">
+                                    {todayKST} | 08:30 AM JUST UPDATED
+                                </span>
+                            </div>
                         </div>
                     </nav>
 
                     <main className="max-w-2xl mx-auto px-6 py-10 space-y-16">
                         <header className="space-y-4">
                             <div className="flex items-center gap-2">
-                                <Icon name="flame" className="text-orange-600" size={16} />
+                                <div className="p-1.5 bg-orange-50 rounded-lg text-orange-600">
+                                    <CustomIcon name="flame" size={14} />
+                                </div>
                                 <span className="text-[11px] font-black text-orange-600 uppercase tracking-[0.25em]">Morning Insight Letter</span>
                             </div>
-                            <h2 className="text-4xl font-black leading-tight text-gray-900">리더를 위한<br/><span className="text-orange-500">오늘의 아침 레터</span></h2>
+                            <h2 className="text-4xl font-black leading-tight tracking-tight text-gray-900">
+                                리더 설계사님을 위한<br/><span className="text-orange-500">오늘 아침의 레터</span>
+                            </h2>
+                            <p className="text-gray-400 font-semibold text-sm leading-relaxed max-w-md">
+                                {todayKST} 오전 8시 30분, 대법원 최신 보상 판례와 리브랜딩된 가치 중심의 특약 정보가 독점 배달되었습니다.
+                            </p>
                         </header>
 
-                        <section className="relative h-[550px] rounded-[3.5rem] overflow-hidden shadow-2xl bg-black">
+                        {/* 3단계 순환식 동기부여 야화 카드뉴스 */}
+                        <section className="relative h-[550px] rounded-[3.5rem] overflow-hidden shadow-2xl shadow-gray-200 bg-black">
                             <div className="absolute top-8 left-0 w-full px-8 flex gap-2 z-20">
                                 {INITIAL_DATA.motivation.slides.map((_, idx) => (
                                     <div key={idx} className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden">
-                                        <div className="h-full bg-orange-500" style={{ width: idx === currentSlide ? `${progress}%` : idx < currentSlide ? '100%' : '0%' }} />
+                                        <div 
+                                            className="h-full bg-orange-500"
+                                            style={{ 
+                                                width: idx === currentSlide ? `${progress}%` : idx < currentSlide ? '100%' : '0%',
+                                                transition: idx === currentSlide ? 'none' : 'width 0.2s ease'
+                                            }}
+                                        />
                                     </div>
                                 ))}
                             </div>
+
                             {INITIAL_DATA.motivation.slides.map((slide, idx) => (
-                                <div key={idx} className={`absolute inset-0 transition-opacity duration-1000 ${idx === currentSlide ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                                    <img src={slide.image} className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                                    <div className="absolute bottom-0 left-0 p-12 w-full space-y-6">
-                                        <h3 className="text-3xl font-black text-white break-keep">{slide.text}</h3>
-                                        <p className="text-white/80 text-lg font-medium line-clamp-2">{slide.subText}</p>
-                                        <button onClick={() => setSelectedNews({ ...slide, category: 'MOTIVATION', title: slide.text })} className="w-full py-4 bg-white text-gray-900 rounded-2xl font-black text-sm shadow-xl active:scale-95 transition-transform">스토리 전체 읽기</button>
+                                <div 
+                                    key={idx}
+                                    className={`absolute inset-0 transition-all duration-1000 transform ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}
+                                >
+                                    <img src={slide.image} className="w-full h-full object-cover" alt="" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
+                                    
+                                    <div className="absolute bottom-0 left-0 p-12 w-full space-y-8">
+                                        <div className="space-y-4">
+                                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-bold text-white uppercase tracking-widest">
+                                                <CustomIcon name="quote" className="text-orange-400" size={12} /> Morning Hidden Story
+                                            </div>
+                                            <h3 className="text-2xl md:text-3xl font-black text-white leading-tight break-keep">{slide.text}</h3>
+                                            <p className="text-white/80 text-base font-medium leading-relaxed break-keep line-clamp-3">{slide.subText}</p>
+                                        </div>
+                                        
+                                        <div className="pt-2">
+                                            <button 
+                                                onClick={() => setSelectedNews({ ...slide, category: 'MOTIVATION', title: slide.text })}
+                                                className="w-full flex items-center justify-center gap-3 py-4 bg-white text-gray-900 rounded-2xl font-black text-sm hover:bg-orange-500 hover:text-white transition-all shadow-xl active:scale-95"
+                                            >
+                                                스토리 전체 읽기 <CustomIcon name="external-link" size={14} />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
                         </section>
 
-                        <section className="space-y-12">
-                            <div className="space-y-6">
-                                <h3 className="font-black text-2xl flex items-center gap-2"><Icon name="trending-up" className="text-emerald-600" /> 생활 경제 인사이트</h3>
-                                <div onClick={() => setSelectedNews({ ...INITIAL_DATA.economy, category: 'ECONOMY' })} className="p-10 bg-white border border-gray-100 rounded-[3.5rem] shadow-xl cursor-pointer hover:-translate-y-1 transition-transform">
-                                    <span className="px-3 py-1 bg-emerald-600 text-white text-[10px] font-black rounded-full uppercase">생활 경제</span>
-                                    <h4 className="text-2xl font-black text-gray-900 mt-4">{INITIAL_DATA.economy.title}</h4>
-                                    <p className="text-gray-500 mt-2">{INITIAL_DATA.economy.summary}</p>
+                        {/* 생활 경제 섹션 */}
+                        <section className="space-y-6">
+                            <div className="flex items-center gap-2 text-emerald-600">
+                                <div className="p-2 bg-emerald-50 rounded-xl"><CustomIcon name="trending-up" size={20} /></div>
+                                <h3 className="font-black text-2xl tracking-tight text-gray-900">생활 경제 인사이트</h3>
+                            </div>
+                            <div 
+                                onClick={() => setSelectedNews({ ...INITIAL_DATA.economy, category: 'ECONOMY' })}
+                                className="group p-10 bg-white border border-gray-100 rounded-[3rem] shadow-xl shadow-gray-100/50 cursor-pointer transition-all hover:-translate-y-1 hover:border-emerald-200"
+                            >
+                                <div className="space-y-5">
+                                    <CategoryTag type="ECONOMY" />
+                                    <h4 className="text-2xl font-black text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors">{INITIAL_DATA.economy.title}</h4>
+                                    <p className="text-gray-500 text-base font-semibold leading-relaxed line-clamp-2">{INITIAL_DATA.economy.summary}</p>
+                                    <div className="pt-2 flex items-center gap-1 text-xs font-black text-emerald-600 uppercase tracking-widest">
+                                        상세 인사이트 보기 <CustomIcon name="external-link" size={13} />
+                                    </div>
                                 </div>
                             </div>
+                        </section>
 
-                            <div className="space-y-6">
-                                <h3 className="font-black text-2xl flex items-center gap-2"><Icon name="book-open" /> 보험업계 데일리 리포트</h3>
-                                <div className="grid gap-6">
-                                    {INITIAL_DATA.newsList.map((news, idx) => (
-                                        <div key={idx} onClick={() => setSelectedNews(news)} className="group flex items-center gap-6 p-8 bg-white rounded-[3rem] border border-gray-100 hover:border-orange-200 cursor-pointer transition-all">
-                                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${news.category === 'CLAIMS' ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'}`}>
-                                                <Icon name={news.category === 'CLAIMS' ? 'scale' : news.category === 'HANWHA' ? 'sun' : 'shield-check'} size={28} />
-                                            </div>
-                                            <div className="flex-1">
-                                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{news.category} Report</span>
-                                                <h4 className="text-xl font-black text-gray-900 group-hover:text-orange-600 break-keep mt-1">{news.title}</h4>
-                                            </div>
+                        {/* 업계 데일리 리포트 섹션 */}
+                        <section className="space-y-6">
+                            <div className="flex items-center gap-2 text-gray-900">
+                                <div className="p-2 bg-gray-100 rounded-xl"><CustomIcon name="book-open" size={20} /></div>
+                                <h3 className="font-black text-2xl tracking-tight text-gray-900">보험업계 데일리 리포트</h3>
+                            </div>
+                            <div className="grid grid-cols-1 gap-6">
+                                {INITIAL_DATA.newsList.map((news, idx) => (
+                                    <div 
+                                        key={idx}
+                                        onClick={() => setSelectedNews(news)}
+                                        className="group flex flex-col md:flex-row items-start gap-6 p-8 bg-white rounded-[3rem] border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all cursor-pointer"
+                                    >
+                                        <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
+                                            news.category === 'CLAIMS' ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'
+                                        } group-hover:bg-orange-500 group-hover:text-white`}>
+                                            <CustomIcon name={news.category === 'HANWHA' ? 'sun' : news.category === 'FSS' ? 'shield-check' : 'scale'} size={24} />
                                         </div>
-                                    ))}
-                                </div>
+                                        <div className="flex-1 space-y-3">
+                                            <CategoryTag type={news.category} />
+                                            <h4 className="text-xl font-black text-gray-900 group-hover:text-orange-600 transition-colors break-keep">{news.title}</h4>
+                                            <p className="text-sm text-gray-400 font-semibold leading-relaxed italic line-clamp-1">{news.summary}</p>
+                                        </div>
+                                        <div className="self-center p-2 rounded-xl bg-gray-50 group-hover:bg-orange-50 text-gray-300 group-hover:text-orange-500 transition-all">
+                                            <CustomIcon name="external-link" size={16} />
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </section>
                     </main>
 
+                    {/* 푸터 영역 */}
+                    <footer className="py-20 text-center border-t border-gray-100 max-w-2xl mx-auto px-6">
+                        <div className="space-y-4">
+                            <div className="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center mx-auto text-gray-400">
+                                <CustomIcon name="sun" size={16} />
+                            </div>
+                            <p className="text-[11px] font-black text-gray-400 uppercase tracking-[0.4em]">Leaders Insight Portal</p>
+                            <p className="text-[9.5px] font-bold text-gray-300 uppercase tracking-widest">
+                                © {todayKST.split('.')[0]} Leaders Insight System. All contents are highly confidential and protected.
+                            </p>
+                        </div>
+                    </footer>
+
+                    {/* 모달 팝업 상세창 */}
                     {selectedNews && (
                         <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-6 lg:p-12">
-                            <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-md" onClick={() => setSelectedNews(null)} />
-                            <div className="relative bg-white w-full max-w-4xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden rounded-t-[3rem] md:rounded-[3.5rem] shadow-2xl animate-slide-up flex flex-col">
-                                <div className="sticky top-0 bg-white/95 border-b border-gray-100 px-8 py-6 flex items-center justify-between z-20">
+                            <div className="absolute inset-0 bg-gray-950/80 backdrop-blur-md" onClick={() => setSelectedNews(null)} />
+                            <div className="relative bg-white w-full max-w-4xl h-[95vh] md:h-auto md:max-h-[90vh] overflow-hidden rounded-t-[3rem] md:rounded-[3.5rem] shadow-2xl animate-in slide-in-from-bottom-20 duration-500 flex flex-col">
+                                <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-100 px-8 py-5 flex items-center justify-between z-20">
                                     <div className="flex items-center gap-4">
-                                        <span className={`w-3 h-3 rounded-full ${selectedNews.category === 'CLAIMS' ? 'bg-red-600' : 'bg-orange-500'}`} />
+                                        <span className={`w-3 h-3 rounded-full ${selectedNews.category === 'CLAIMS' ? 'bg-red-600 animate-pulse' : 'bg-orange-500'}`} />
                                         <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{selectedNews.category} Report</span>
                                     </div>
-                                    <button onClick={() => setSelectedNews(null)} className="p-3 hover:bg-gray-100 rounded-2xl text-gray-400"><Icon name="x" size={28} /></button>
+                                    <button onClick={() => setSelectedNews(null)} className="p-2.5 hover:bg-gray-100 rounded-2xl transition-all text-gray-400"><CustomIcon name="x" size={24} /></button>
                                 </div>
-                                <div className="flex-1 overflow-y-auto p-10 md:p-16 custom-scrollbar">
+                                
+                                <div className="flex-1 overflow-y-auto p-8 md:p-16 lg:p-20 custom-scrollbar">
                                     <div className="max-w-3xl mx-auto">
-                                        <h2 className="text-3xl md:text-5xl font-black text-gray-900 leading-tight mb-12">{selectedNews.title}</h2>
+                                        <h2 className="text-3xl md:text-4.5xl font-black text-gray-900 leading-[1.15] mb-10 break-keep">{selectedNews.title}</h2>
+                                        
+                                        {/* 뉴스 본문 내용 마크다운식 렌더링 */}
                                         <div className="article-body" dangerouslySetInnerHTML={{ __html: selectedNews.fullContent }} />
+                                        
+                                        {/* 판례 출처 링크 (분조위 및 대법원 연계) */}
                                         {selectedNews.sourceUrl && (
-                                            <div className="mt-12 p-8 bg-gray-50 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
+                                            <div className="mt-12 p-8 bg-slate-50 border border-slate-100 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
                                                 <div className="flex items-center gap-4">
-                                                    <Icon name="file-text" className="text-gray-400" />
-                                                    <p className="text-sm font-black">관련 판례 및 근거 자료 원문 확인</p>
+                                                    <div className="p-3 bg-white rounded-xl text-gray-400 shadow-sm"><CustomIcon name="file-text" size={20} /></div>
+                                                    <div>
+                                                        <p className="text-sm font-black text-gray-900">공식 출처 법적 효력 판결문 확인</p>
+                                                        <p className="text-xs text-gray-400">대법원 종합법률정보 및 금감원 원문 자료를 확인하세요.</p>
+                                                    </div>
                                                 </div>
-                                                <a href={selectedNews.sourceUrl} target="_blank" className="px-6 py-3 bg-gray-900 text-white rounded-xl text-xs font-black">원문 확인하기</a>
+                                                <a 
+                                                    href={selectedNews.sourceUrl} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl text-xs font-black hover:bg-black transition-all"
+                                                >
+                                                    원문 페이지 이동 <CustomIcon name="external-link" size={14} />
+                                                </a>
                                             </div>
                                         )}
-                                        <div className="mt-8 p-6 bg-red-50 border-l-4 border-red-500 text-sm text-red-700 font-bold">⚠️ 필수 고지: 본 내용은 상품 약관 및 심사 결과에 따라 달라질 수 있습니다.</div>
+
+                                        {/* 보상 관련 필수 고지 의무 영역 */}
+                                        <div className="mt-8 p-6 bg-red-50/80 border-l-4 border-red-500 text-sm text-red-800 font-bold leading-relaxed rounded-r-2xl">
+                                             ⚠️ 필수 고지 사항: 본 레터에 기술된 보상 청구 및 수리 사례는 판례 해석을 기반으로 작성되었습니다.<br/>
+                                             지점 설계사님은 고객 상담 시 실제 보상 여부 및 지급 한도액은 반드시 가입하신 개별 계약 상품의 약관 전문 및 가입 담보, 보상과의 최종 심사 결과에 따른다는 문구를 항상 명확히 고지하여 주십시오.
+                                        </div>
+
+                                        {/* 내용 복사 버튼 영역 (공유 버튼 대체) */}
                                         <div className="mt-20 pt-12 border-t border-gray-100">
-                                            <button onClick={() => handleCopy(selectedNews.fullContent)} className="w-full flex items-center justify-center gap-3 py-5 bg-orange-500 text-white font-black rounded-[2rem] hover:bg-orange-600 transition-all shadow-2xl active:scale-95">
-                                                <Icon name={isCopying ? "check" : "copy"} />
-                                                {isCopying ? "복사 완료!" : "본문 내용 복사하기"}
-                                            </button>
+                                             <button 
+                                                onClick={() => handleCopyText(selectedNews.fullContent)} 
+                                                className="w-full flex items-center justify-center gap-3 py-5 bg-orange-500 text-white font-black rounded-[2rem] hover:bg-orange-600 transition-all shadow-2xl shadow-orange-200 active:scale-95 text-base"
+                                             >
+                                                 <CustomIcon name={isCopying ? "check" : "copy"} size={18} />
+                                                 {isCopying ? "클립보드 복사 완료!" : "본문 전체 내용 복사하기 (고객 전송용)"}
+                                             </button>
+                                             <p className="mt-4 text-center text-[10.5px] text-gray-400 font-bold uppercase tracking-widest">
+                                                 * 회사 보안 관리 지침에 따라 외부 SNS 자동 공유 및 보관 기능은 제한되며, 사적인 상담용 텍스트 인용만 허용됩니다.
+                                             </p>
                                         </div>
                                     </div>
                                 </div>
