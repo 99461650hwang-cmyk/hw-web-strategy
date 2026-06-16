@@ -2,9 +2,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaders Insight - 모닝 부스트 포털</title>
-    <!-- React 및 필수 외부 라이브러리 CDN 로드 (가장 안정적인 버전) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Leaders Insight - 프리미엄 모닝 부스트</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -16,27 +15,34 @@
             font-family: 'Pretendard', sans-serif; 
             background-color: #FAFAFA; 
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
-        /* 스크롤바 최적화 */
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #CBD5E1; }
         
-        /* 뉴스레터 스타일 본문 서식 */
         .article-body h3 { 
-            font-size: 1.5rem; 
+            font-size: 1.4rem; 
             font-weight: 800; 
             color: #111827; 
             margin: 2.5rem 0 1.25rem; 
             border-left: 5px solid #F97316; 
-            padding-left: 1rem; 
-            line-height: 1.3;
+            padding-left: 0.85rem; 
+            line-height: 1.4;
+        }
+        .article-body h4 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ea580c;
+            margin: 1.75rem 0 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .article-body p { 
-            font-size: 1.1rem; 
-            line-height: 1.85; 
-            color: #374151; 
+            font-size: 1.05rem; 
+            line-height: 1.95; 
+            color: #2D3748; 
             margin-bottom: 1.5rem; 
             word-break: keep-all; 
             text-align: justify;
@@ -44,35 +50,40 @@
         .article-body strong { 
             color: #111827; 
             font-weight: 800; 
-            background: linear-gradient(180deg, transparent 65%, #FFEDD5 65%); 
+            background: linear-gradient(180deg, transparent 65%, #FFEDD5 35%); 
         }
         .article-body ul { 
             background-color: #F8FAFC;
-            border: 1px solid #F1F5F9;
-            padding: 1.5rem 1.75rem; 
-            border-radius: 1.5rem;
+            border: 1px solid #E2E8F0;
+            padding: 1.75rem 1.75rem 1.75rem 2.25rem; 
+            border-radius: 1.25rem;
             margin: 1.5rem 0;
         }
         .article-body li { 
             position: relative; 
-            padding-left: 1.25rem; 
-            margin-bottom: 0.75rem; 
-            line-height: 1.7; 
-            color: #4B5563; 
+            list-style-type: none;
+            margin-bottom: 1rem; 
+            line-height: 1.85; 
+            color: #4A5568; 
             font-size: 1.05rem; 
         }
         .article-body li::before { 
             content: '•'; 
             color: #F97316; 
             position: absolute; 
-            left: 0; 
+            left: -1.25rem; 
             font-weight: bold; 
         }
-        .article-body li:last-child {
-            margin-bottom: 0;
-        }
         
-        /* 애니메이션 효과 */
+        .instructor-guide {
+            background-color: #FFF7ED;
+            border: 1px solid #FED7AA;
+            border-left: 5px solid #F97316;
+            padding: 1.75rem;
+            border-radius: 1.25rem;
+            margin: 1.75rem 0;
+        }
+
         @keyframes slideUp { 
             from { transform: translateY(20px); opacity: 0; } 
             to { transform: translateY(0); opacity: 1; } 
@@ -84,10 +95,8 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        // 핵심 React 훅 디스트럭처링
         const { useState, useEffect, useCallback, useMemo } = React;
 
-        // 인라인 SVG 아이콘 컴포넌트
         const CustomIcon = ({ name, size = 20, className = "" }) => {
             const icons = {
                 sun: <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z" />,
@@ -102,202 +111,156 @@
                 x: <path d="M18 6L6 18M6 6l12 12" />,
                 "file-text": <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8" />,
                 "external-link": <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6 M15 3h6v6 M10 14L21 3" />,
-                lock: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></>,
-                eye: <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />,
-                "eye-off": <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />,
-                quote: <path d="M3 21c3 0 7-1 7-8V5H3v8h4c0 4.41-3.59 8-8 8zm13 0c3 0 7-1 7-8V5h-7v8h4c0 4.41-3.59 8-8 8z" />
+                calendar: <path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z M16 2v4 M8 2v4 M3 10h18" />
             };
-
             return (
-                <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2.5" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    style={{ width: size, height: size }}
-                    className={className}
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: size, height: size }} className={className}>
                     {icons[name] || null}
                 </svg>
             );
         };
 
-        // 31일 무인 로테이션 데이터 뱅크
-        const DAILY_DATA_BANK = {};
-
-        // 리더의 위상에 최적화된 새로운 모닝 인사이트 시드 리스트
+        // -------------------------------------------------------------
+        // [완벽 정제] 직접적이고 부담스러운 표현을 배제하고 '리더/우리 같은 프로들'로 통일한 데이터
+        // -------------------------------------------------------------
+        
         const SEED_MOTIVATIONS = [
             {
-                image: "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=1200&auto=format&fit=crop",
-                text: "절망의 금문교 아래 설치된 '기적의 안전 그물'",
-                subText: "건설 초기 잦은 추락 사고로 악명 높았던 샌프란시스코의 금문교. 인부들의 공포를 지우고 작업 속도를 폭발적으로 올린 비밀.",
+                id: 1,
+                text: "지금 당장 무의미해 보이는 노력이 훗날 거대한 기회로 연결되는 순간",
+                image: "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=600&auto=format&fit=crop",
+                subText: "대학을 자퇴한 청년이 아무 쓸모도 없어 보이던 서체 디자인 수업에 호기심으로 들어갔습니다. 10년 뒤, 그 작은 배움의 조각이 컴퓨터 서체 역사를 바꾼 매킨토시 개발의 밑바탕이 되었습니다. 오늘 우리가 들여다보는 깊이 있는 약관 한 줄이 훗날 중요한 비즈니스 결합의 순간에 인생을 바꿀 강력한 힘으로 되살아납니다.",
                 fullContent: `
-                    <h3>[모닝 인사이트] 금문교 아래에 설치된 13만 달러짜리 심리 장막</h3>
-                    <p>안녕하세요 리더님! 상쾌한 아침 기운과 함께 오늘 아침 리더님께 배달해 드릴 새로운 영감은 샌프란시스코의 상징 '금문교(Golden Gate Bridge)'의 건설 비화입니다. 1930년대 중반, 거친 바람과 자욱한 안개로 가득한 지협 속에서 60층 높이의 상판을 설치하는 공사는 그 자체로 인부들에게 극심한 절망이자 죽음의 문턱이었습니다.</p>
-                    <p>발 하나만 잘못 디디면 그대로 성난 파도로 추락해 영영 돌아오지 못했기에, 작업 속도는 지지부진했고 공사장은 늘 팽팽한 고성과 공포심으로 굳어 있었습니다. 이때 총설계자 조셉 스트라우스는 당시로선 천문학적인 거금이었던 13만 달러를 전격 투자하여 다리 아래에 거대한 밧줄로 짠 **안전 그물**을 설치하는 파격적인 모험을 단행했습니다.</p>
-                    <p>결과는 우주적이었습니다. 실제로 공사 도중 중심을 잃고 추락하던 인부 19명이 이 그물에 걸려 전원 무사히 목숨을 건졌으며, 이들은 스스로를 '지옥에서 돌아온 클럽(Halfway to Hell Club)'이라 칭했습니다. 더욱 경이로운 점은 안전망이 눈앞에 존재한다는 안도감 하나만으로 인부들의 추락 공포가 완전히 증발하여, **다리 전체의 공사 능률과 건설 진척 속도가 이전 대비 무려 25% 이상 폭발적으로 급상승**했다는 역사적 사실입니다.</p>
-                    <p><strong>리더님이 전달하는 보장자산의 본질은 바로 '금문교의 그물'입니다.</strong><br/>우리가 제안하는 보험은 단순히 큰 병에 걸렸을 때 나오는 '보험금'이라는 현금 가치에 머물지 않습니다. 다리 밑에 튼튼한 그물이 있음을 아는 인부들이 두려움 없이 기백 넘치게 교량을 활보하듯, 고객들은 리더님이라는 든든한 파트너가 짜놓은 '보장자산'이 뒤를 받쳐준다는 깊은 신뢰가 있기 때문에 매일 매일의 삶에 당당히 직면하고 더 안전하고 창조적인 도전을 할 수 있게 되는 것입니다. 오늘도 고객의 삶 밑바닥에 가장 든든하고 우아한 인생 그물을 설계하는 명예로운 리더님들을 뜨겁게 격려합니다!</p>
-                `
-            },
-            {
-                image: "https://images.unsplash.com/photo-1554124494-192a6c867140?q=80&w=1200&auto=format&fit=crop",
-                text: "미켈란젤로가 차가운 대리석에서 발견한 '다비드'",
-                subText: "거칠고 쓸모없어 버려졌던 5미터짜리 거대 돌덩어리 속에서 어떻게 인류 역사상 가장 아름다운 조각상이 탄생했을까요?",
-                fullContent: `
-                    <h3>[모닝 인사이트] 빼기의 예술: 대리석 조각 속에 이미 존재하던 완벽함</h3>
-                    <p>리더님, 이탈리아 피렌체의 아카데미아 미술관에 서서 다비드 조각상을 마주한 관람객들은 그 압도적인 혈관의 묘사와 근육의 긴장감에 숨을 죽이게 됩니다. 당시 이 다비드상의 재료가 되었던 5.5미터가 넘는 대리석 원석은 원래 다른 조각가가 조각을 하려다 흠집을 심하게 내어 쓰레기장 구석에 40년 가까이 흉물스럽게 방치되어 있던 버림받은 돌덩이였습니다.</p>
-                    <p>모두가 불가능하다고 고개를 저었지만, 천재 조각가 미켈란젤로는 망치와 정을 들고 그 돌 앞에 섰습니다. 그리고 불과 몇 달 만에 세상을 바꾼 다비드를 소환해 냈죠. 훗날 기자가 그 불후의 명작을 빚어낸 영감의 비결을 묻자 미켈란젤로는 이렇게 답했습니다. **\"다비드는 이미 대리석 속에 완전히 완성된 채로 숨어 있었습니다. 나는 단지 다비드를 가로막고 있던 불필요한 외곽의 거친 돌들을 세심하게 깎아내어 비워주었을 뿐입니다.\"**</p>
-                    <p><strong>고객을 대면하여 컨설팅을 수행하는 리더님의 작업도 이와 같습니다.</strong><br/>훌륭한 재무 상담은 고객에게 새로운 약관과 생소한 특약을 억지로 덧붙이고 채워 넣는 작업이 아닙니다. 고객의 삶을 자세히 들여다보면, 이미 그들의 잠재력과 행복은 대리석처럼 그 자체로 완벽합니다. 다만 살아가며 마주할 리스크와 거품 낀 불필요한 지출, 중복된 군더더기들이 그들의 찬란한 미래를 가로막고 있을 뿐입니다. 미켈란젤로처럼 불필요한 리스크의 껍데기를 정교하게 깎아내어 고객의 인생 속 가장 빛나는 '완벽한 보장 자산'을 조각해 내는 품격 있는 리더로 서시기를 응원합니다.</p>
-                `
-            },
-            {
-                image: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?q=80&w=1200&auto=format&fit=crop",
-                text: "97%의 오차 속에서 묵묵히 이루어낸 아폴로 11호의 달 착륙",
-                subText: "아폴로 11호가 지구에서 달까지 가는 비행시간 동안 원래 가고자 했던 궤도에 서 있었던 비율은 고작 3%에 불과했습니다.",
-                fullContent: `
-                    <h3>[모닝 인사이트] 끊임없는 미세 조정의 힘: 궤도를 이탈하는 우주선</h3>
-                    <p>리더님, 1969년 인류 최초로 닐 암스트롱을 태우고 달에 착륙한 '아폴로 11호'의 위대한 여정을 기억하실 겁니다. 놀라운 천문학적 정밀 과학이 총동원된 비행기였기에 지구를 떠난 후 한 치의 오차도 없이 우주 활주로를 똑바로 나아갔을 것 같지만, NASA의 사후 기록은 우리의 통념을 정면으로 깨뜨립니다.</p>
-                    <p>우주선은 우주의 중력풍, 미세 운석, 태양풍의 끊임없는 저항 때문에 **비행 시간의 무려 97% 이상을 계획된 원래의 항로에서 이탈해 갈지자(之)로 비행**하고 있었습니다. 만약 NASA 컴퓨터와 조종사들이 손을 놓고 방관했다면 우주선은 광막한 우주 미아가 되어 암흑 속으로 사라졌을 것입니다. 달 착륙을 성공시켰던 진정한 기술력은 '오차가 없는 것'이 아니라, 경로에서 벗어날 때마다 실시간으로 자이로스코프와 추력기를 가동해 끊임없이 **미세 궤도 조정(Trajectory Correction)**을 수행해 나간 조용한 인내와 보정이었습니다.</p>
-                    <p><strong>고객의 인생 재무 궤도 역시 우주의 항해와 같습니다.</strong><br/>처음 만나 꼼꼼하게 체결한 보장 설계 포트폴리오가 평생 완벽하게 순항할 수는 없습니다. 고객의 결혼, 출산, 이직, 갑작스러운 금융 시장 변동 등 매 순간 불어오는 거센 인생의 중력풍이 궤도를 사정없이 흔들기 때문입니다. 그렇기에 리더님은 단순한 '상품 판매자'에 멈춰서는 안 됩니다. 고객의 생애 주기 곁을 지키며 흔들릴 때마다 조용히 보장 자산을 업데이트해 주고 원래 약속했던 '안도감의 종착지'로 안착하도록 끊임없이 손을 잡아 조율해 주는 위대한 우주 관제소의 리더가 되어주셔야 합니다.</p>
-                `
-            }
-        ];
-
-        const SEED_ECONOMY = [
-            {
-                title: "🛍️ 타인의 안목을 통째로 구독하는 '디토 소비(Ditto)' 트렌드 속 보장 처방 화법",
-                summary: "인플루언서나 전문가의 라이프스타일을 그대로 모방하여 의사결정 시간을 극도로 줄이는 제트세대의 신소비 트렌드.",
-                fullContent: `
-                    <h3>생활 경제 레터: 귀찮은 선택의 늪, '디토(Ditto) 소비'가 대안입니다</h3>
-                    <p>안녕하세요 리더님! 최근 유통 시장을 장악하고 있는 가장 주목해야 할 키워드는 바로 **'디토 소비(Ditto Consumption)'**입니다. 디토는 라틴어 어원에서 비롯되어 '나도 마찬가지'라는 의미를 담고 있습니다. 너무나 방대한 정보 과잉의 시대 속에서 살아가다 보니, 현대 소비자들은 스펙을 일일이 비교하는 복잡한 분석 단계를 과감히 건너뛰고 자신이 신뢰하는 특정 전문가나 버티컬 큐레이터의 안목을 전적으로 추종하여 구매 결정을 내리는 성향을 강하게 띱니다.</p>
-                    <p>이 신소비 트렌드를 리더님의 보험 계약 상담 스피치에 영리하게 대입해 보세요.</p>
-                    <p><strong>"고객님, 수천 페이지의 복잡한 보험 약관과 수십 개의 특약을 꼼꼼히 일일이 비교하여 가입하는 시대는 끝났습니다. 이제는 최고의 '인생 보장 큐레이터'인 저의 검증된 안목을 믿고 '디토'하시는 것이 가장 현명합니다. 수많은 VIP 고객들이 저의 보장 로드맵을 신뢰하여 이미 가입을 마치셨듯이, 복잡한 고민은 제가 사전에 완벽히 마쳤으니 고객님은 이 든든한 맞춤 처방 시트를 그대로 마음 편히 소장만 하시면 됩니다."</strong></p>
-                `
-            },
-            {
-                title: "🍒 한정된 자원으로 리스크를 분할하는 '체리슈머(Cherrysumer)' 맞춤 조각 포트폴리오 설계",
-                summary: "가성비를 극대화하기 위해 구매 계약 단위를 초미세 조각으로 쪼개어 실속을 챙기는 실용주의 세대 공략법.",
-                fullContent: `
-                    <h3>생활 경제 레터: 불황기 극복의 만능 카드, 보장 조각 전략</h3>
-                    <p>리더님, 시장의 경기가 얼어붙을수록 단순 가성비를 뛰어넘어 자신이 필요한 혜택만 정교하게 체리피킹(Cherry-picking)하여 소비하는 **'체리슈머(Cherrysumer)'** 성향의 가입자들이 주류로 부상합니다. 이들은 무겁고 큰 종합 보험을 권유하면 거부감부터 가지지만, 자신에게 유독 취약한 리스크만 가볍고 똑똑하게 커버할 수 있는 조각 상품에는 놀랍도록 지갑을 쉽게 엽니다.</p>
-                    <p>이러한 똑똑한 소비자들을 설득하기 위해서는 무조건적인 가입 권유보다는 쪼개고 결합하는 **'조각보 보장 화법'**이 절대적으로 유리합니다.</p>
-                    <p><strong>"고객님, 최근 똑똑한 체리슈머들은 매달 큰 돈이 고정적으로 묶이는 거창한 풀케어 설계를 선호하지 않습니다. 대신 저녁 밀키트를 고르듯, 이번 달에는 난임과 가임력 보존을 위한 맞춤 핵심 여성 케어 담보를 가볍게 배치하고, 다음 분기 여유가 생기실 때 도수치료나 누수 일배책 담보를 실속 있게 조립해 나가는 '조각보식 셀프 보장 설계'가 정답입니다. 제가 고객님만을 위한 가장 컴팩트한 모듈형 보장 포트폴리오를 무료로 전담 피팅해 드리겠습니다."</strong></p>
+                    <h3>[모닝 브리핑] 일상에 찍어두는 작은 배움의 점들이 연결되는 원리</h3>
+                    <p>리더 여러분, 안녕하십니까. 오늘 아침은 매일 마주하는 지표 분석과 빽빽하게 얽혀 있는 규정집을 검토하면서 한 번쯤 가졌을 법한 고민들을 조용히 나누며 시작해보고자 합니다. "지금 하고 있는 이 세부적인 연구와 지식 습득이 정말 미래에 큰 차이를 만들어낼 수 있을까?" 하는 의문 말입니다.</p>
+                    <p>우리에게도 너무나 친숙한 혁신의 아이콘, 스티브 잡스의 젊은 시절 이야기에서 그 해답을 찾아볼 수 있습니다. 잡스는 대학교에 입학한 지 얼마 되지 않아 학업의 방향을 고민하며 자퇴를 결심했습니다. 정규 교육 과정의 울타리를 벗어난 그는, 오히려 이전에는 눈여겨보지 않았던 다양한 배움의 기회들을 마주하게 되었죠. 그중 하나가 바로 캠퍼스 구석에서 우연히 발견한 <strong>서체 디자인과 정밀 레이아웃에 관한 청강 수업</strong>이었습니다.</p>
+                    <p>그는 그곳에서 글자의 비율과 구조, 자간과 행간이 만들어내는 시각적 균형감, 그리고 독자의 눈이 가장 편안하게 텍스트를 인지하는 레이아웃의 원리를 깊이 있게 파고들었습니다. 사실 그 당시 주변에서는 "당장 취업이나 창업에 아무런 쓸모도 없는 배움에 시간을 허비한다"는 부정적인 시선을 보내기도 했습니다. 잡스 본인조차도 이 지식이 미래에 어떤 가치를 발현할지 전혀 예상하지 못한 채, 그저 지적 호기심의 점을 하나씩 찍어두었을 뿐이었습니다.</p>
+                    <p>하지만 정확히 10년 뒤, 세상의 흐름을 바꾸는 놀라운 반전이 시작됩니다. 잡스가 세계 최초로 개인용 그래픽 운영체제를 갖춘 컴퓨터인 '매킨토시'를 설계하기 시작했을 때입니다. <strong>방황하던 청년 시절에 무심코 남겨두었던 그 정밀한 서체 지식들이 잡스의 머릿속에서 선명하게 연결된 것입니다.</strong> 그는 기계적이고 삭막했던 기존 컴퓨터 화면을 완전히 탈피하여, 아름답고 직관적인 글꼴 크기와 간격을 컴퓨터 시스템의 기본 규격으로 정립했습니다. 만약 그 시절에 무의미해 보이던 배움의 점을 찍어두지 않았더라면, 우리가 매일 들여다보는 미려한 디지털 업무 화면은 탄생하지 못했을 것입니다.</p>
+                    <p><strong>우리가 오늘 마주하는 일상적인 지식의 축적 과정 역시 이와 완전히 결을 같이합니다.</strong><br/>매일 아침 검토하는 복잡한 보상 판례, 까다로운 세법 해석, 고액 자산가의 포트폴리오를 다루는 세부 기법 등은 지금 당장은 눈앞의 가시적인 결과와 연결되지 않는 것처럼 보일 수 있습니다. '이 까다로운 세부 조항까지 굳이 파헤쳐야 하는가' 하는 의구심이 들 때도 있을 것입니다.</p>
+                    <p>그러나 우리 같은 프로들의 세계에서는 결코 헛되이 흩어지는 배움이란 존재하지 않습니다. 오늘 마음속에 깊이 새겨둔 예리한 분석력과 약관의 조항 한 줄은, 훗날 일생일대의 중요한 의사결정을 내려야 하는 핵심 미팅이나 기업 대표와의 심도 있는 재무 상담 현장에서 남들은 결코 흉내 낼 수 없는 **독보적인 전문성의 빛**으로 발현될 것입니다. 우리가 찍어가고 있는 수많은 지식의 점들이 마침내 하나의 큰 성공의 선으로 완성되는 그날을 향해, 오늘 하루도 깊이와 기품을 더하는 시간으로 채워가시기를 바랍니다.</p>
                 `
             }
         ];
 
         const SEED_NEWS = [
-            { 
-                category: "CLAIMS", 
-                title: "⚖️ [실무] '가족 간 일배책 중복 가입' 시 자기부담금 소멸과 전액 비례분담 청구 비법 (대법원 2002다61168)", 
-                summary: "가족 중 2인 이상이 각각 일배책에 중복 가입된 경우, 대인/대물 배상 시 본인부담 자부담금 공제 없이 실제 손해액 전액 배상받는 실무 가이드.", 
-                sourceUrl: "https://search.naver.com/search.naver?query=%EB%8C%80%EB%B2%95%EC%9B%90+2002%EB%8B%A461168+%ED%8C%90%EA%B2%B0",
+            {
+                category: "CLAIMS",
+                emoji: "⚖️",
+                rawTitle: "가족 일상생활배상책임 보험 중복 가입 시 본인 부담 면책금이 상쇄되는 법리적 원리",
+                summary: "일상생활배상책임 특약이 다각도로 중복 가입되어 있는 경우, 대물 사고나 누수 피해 시 약관상 기재되어 있는 가입자 자부담금 20만 원이 비례분담 원리에 의해 완전히 소멸하는 구조를 분석합니다. 실무 현장에서 간과하기 쉬운 가입자의 합법적 권리를 논리적으로 도출해내는 리더 가이드를 제시합니다.",
+                sourceUrl: "https://glaw.scourt.go.kr/wsjo/panre/sjo100.do?q=%EB%8C%80%EB%B2%95%EC%9B%90%202002%EB%8B%A461168",
                 fullContent: `
-                    <h3>[보상 실무 레터] 누수나 화재 배상 시 자부담금 20만 원을 0원으로 만드는 마법</h3>
-                    <p>안녕하세요 리더님! 영업 활동에서 가장 유용하게 인용되지만 의외로 많은 가입자들이 몰라서 혜택을 놓치고 있는 **'가족 간 일상생활배상책임(일배책) 중복 가입의 복수 비례분담 적용 법리'**를 상세히 브리핑합니다.</p>
-                    <p><strong>1. 구체적 상황의 딜레마</strong><br/>고객 B씨는 아파트 배관 누수로 인해 아랫집 천장과 명품 가구가 침수되는 피해를 주어 총 150만 원의 손해배상 합의를 진행하게 되었습니다. 본인이 단독 가입한 일배책 약관에 따르면 대물 배상 시 자기부담금(면책금) 20만 원을 공제한 130만 원만 보험사에서 나오고, 나머지 20만 원은 자비로 충당해야 하는 부당함을 마주했습니다.</p>
-                    <p><strong>2. 대법원 확정 판례 및 손해사정 구조 (대법원 2003. 4. 25. 선고 2002다61168 판결 및 금융감독원 분쟁조정결정례 제2013-17호)</strong><br/>대법원은 다수의 보험 계약이 체결되어 중복 적용될 때 피보험자 권익 보호를 우선 선언했습니다. **"피보험자 및 생계를 같이하는 가족 범위 내에서 또 다른 일배책 계약이 존재할 경우, 각 보험사가 분담하는 독립책임액의 합계액이 실제 손해액을 초과하면 피보험자의 자기부담금은 0원으로 완전 공제 처리되며, 양 보험사의 비례 분담을 통해 실제 피해액 전액을 본인부담금 일절 없이 온전히 전액 배상금으로 처리해야 한다"**고 판시했습니다. 이 판결에 기초하여 금융감독원 분쟁조정례에서도 중복 가입 시 자기부담금을 공제하지 않고 전액 지급하도록 감독 기준이 완전 정립되었습니다.</p>
-                    <p><strong>3. 현장 세일즈 팁</strong><br/>"고객님, 가족 구성원 중 한 명이라도 일배책을 가입하고 있다면 다른 가족의 증권도 함께 분석해 보세요. 단돈 몇 천 원의 담보 중복만으로도 실제 사고 발생 시 아까운 자부담금을 완전히 면제받고 대형 배상 문제를 깨끗이 해결할 수 있는 강력한 보장 쉴드가 가동됩니다."</p>
-                ` 
-            },
-            { 
-                category: "CLAIMS", 
-                title: "🏥 [판례] '직업 변경 불통지' 후 사고 발생 시, 직무 외 일상 활동 상해라면 감액 없는 100% 정상 지급 (대법원 96다56316)", 
-                summary: "사무직에서 고위험 현장직으로 이직 후 고지의무 및 통지의무를 누락했더라도, 사고가 직무 활동 외의 일상생활 중에 일어났다면 전액 보상 판결.", 
-                sourceUrl: "https://search.naver.com/search.naver?query=%EB%8C%80%EB%B2%95%EC%9B%90+96%EB%8B%A456316+%ED%8C%90%EA%B2%B0",
-                fullContent: `
-                    <h3>[보상 실무 레터] 직무와 무관한 상해, 직업 변경 불통지가 빌미가 될 수 없습니다</h3>
-                    <p>리더님, 보험 가입 후 직업이나 하시는 업무가 현저히 변경되었음에도 리더님이나 본사에 미처 통지하지 못한 고객들이 참 많습니다. 이 상태에서 사고가 나면 보험사가 **\"통지의무 위반으로 계약 해지는 물론, 비례 삭감된 보험금만 지급하겠다\"**며 고압적으로 나올 수 있는데요, 이에 명확한 팩트로 방어해 드립니다.</p>
-                    <p><strong>1. 판례 분쟁의 배경</strong><br/>사무직으로 가입해 1급 요율을 적용받던 고객 C씨는 배달 대행 등 3급 고위험군으로 이직을 했습니다. 그러나 바쁜 일상 탓에 이를 알리지 않은 상태에서, 주말에 가족들과 등산을 하던 중 실족하여 다리 골절상을 입고 수술비를 전액 청구했습니다. 본사는 직업 변경 미통지를 트랙으로 잡아 상해 보험금 대폭 감액을 예고했습니다.</p>
-                    <p><strong>2. 상법 및 대법원 판결 요지 (상법 제655조 단서 및 대법원 1997. 4. 25. 선고 96다56316 판결)</strong><br/>우리 상법 제655조 및 대법원 리딩 판례는 명확하게 고지하고 있습니다. **\"통지의무(고지의무) 위반 사실이 있다 하더라도 그 사실과 보험사고 발생 사이에 인과관계가 없음이 증명된 경우에는 보험자는 보험금을 지급할 책임이 있다\"**고 명시하고 있습니다. 즉, 발생한 실족 사고 자체는 새롭게 변경된 직업이나 '배달 직무'의 수행과 아무런 인과관계가 없는 일상적인 활동 중에 발생한 상해 사고이므로, 어떠한 비율적 감액도 없이 계약상의 상해 진단비 및 수술비를 100% 정상 지급해야 할 강제적 의무가 있습니다.</p>
-                ` 
-            },
-            { 
-                category: "HANWHA", 
-                title: "🧡 한화손보 '라이프플러스 상조 및 실버 웰빙 케어 서비스' 프리미엄 보장 단독 브리핑", 
-                summary: "초고령화 시대에 발맞춰 진단비 보장과 실제 고품격 장례 및 전속 전문 가사 간병 케어망을 유기적으로 연계한 신규 패키지 특약 론칭.", 
-                sourceUrl: "https://search.naver.com/search.naver?query=%ED%95%9C%ED%99%94%EC%86%90%ED%95%B4%EB%B3%B4%ED%97%98+%EB%B0%80%EB%A0%A8%EB%8D%94%EB%A6%AC%EC%96%B4+%EB%B2%A1%EB%A8%B9%EC%96%B4",
-                fullContent: `
-                    <h3>[한화 뉴스레터] 단순 치료비 보장을 넘어 라이프 서비스의 완전한 동행으로</h3>
-                    <p>한화손해보험이 2026년 실버 요양 시장의 주도권을 장악하기 위해, 단순한 일시금 형태 of 간병 진단비를 넘어 실제 전문 실버 인력의 파견과 명품 장례를 지원하는 **'라이프플러스 상조 연계 실버 건강 담보'**를 대대적으로 업그레이드 론칭했습니다.</p>
-                    <p><strong>1. 혁신 탑재 연계 혜택</strong><br/>가장 차별화된 기능은 고객이 암, 뇌, 심장 등 중증 질환으로 인해 가입 기간 내 진단을 받았을 때, 가족들의 병간호 지치지 않도록 국내 최대 가사/간병 연계 플랫폼과의 업무협약을 토대로 검증된 전문 국가 공인 간병인을 24시간 실시간 무상 매칭 파견해 주는 특별 특약입니다. 아울러 상조 비용 전환 제도를 전격 추가하여 노후 대비 포트폴리오를 빈틈없이 보강했습니다.</p>
-                    <p><strong>2. 경쟁 우위 of 세일즈 핵심 스피치</strong><br/>"고객님, 나이 들어 갑자기 병원 신세를 질 때 자녀들에게 가장 큰 미안함은 간병 비용과 시간입니다. 한화손해보험의 프리미엄 맞춤 실버 담보는 단순히 돈 몇 푼 쥐여주고 떠나는 것이 아니라, 본사의 탄탄한 상조 인력망과 간병 파견 전문팀이 고객님의 가정에 치료부터 돌봄까지 직접 발 벗고 나서서 동행해 드리는 차원 높은 라이프 서비스입니다. 인생의 가치를 저와 함께 든든하게 선점해 보세요."</p>
-                ` 
-            },
-            { 
-                category: "FSS", 
-                title: "⚖️ 금감원 실손보험 4세대 전환 가이드라인 및 합리적 도수치료 청구 문화 정착 방향", 
-                summary: "과도한 비급여 누수로 인한 선량한 우량 고객의 갱신 폭탄을 예방하는 4세대 실손 합리적 보장 전략 및 소구 비법 안내.", 
-                sourceUrl: "https://search.naver.com/search.naver?query=%EA%B8%88%EB%B5%89%EC%9B%90+4%EC%84%B8%EB%8C%80+%EC%8B%A4%EC%86%90%EB%B3%B4%ED%97%98+%EB%8F%84%EC%88%98%EC%B9%98%EB%A3%8C",
-                fullContent: `
-                    <h3>[정책 브리핑 레터] 지속 가능한 의료 안전망의 핵심, 4세대 실손의 진실</h3>
-                    <p>금융감독원과 보험사들은 최근 기존 1~3세대 실손보험료 폭탄 갱신 주기를 맞아 고통받는 가입자들을 위해 **'4세대 실손보험 전환 유도 지원 할인 혜택'**을 확대 배포하고, 동시에 건전한 보장 청구 유도를 위한 정밀 안내 지침을 내놓았습니다.</p>
-                    <p><strong>1. 4세대 실손보험의 구조적 가치</strong><br/>많은 소비자들이 4세대 실손은 보장이 안 좋고 자부담이 높다며 무조건 기피하지만, 실상은 다릅니다. 병원 방문 횟수가 지극히 정상적인 우량 고객들에게는 매달 지출하는 기존 보험료를 최대 50%~70%까지 극적으로 다이어트하여 매월 고정 가계비를 아껴주는 훌륭한 재무 솔루션입니다. 또한 무분별한 도수치료 오남용으로 인한 다른 가입자들의 손해율 분담 책임에서 철저히 격리되어 장기적으로 갱신율이 가장 안정적이라는 장점이 뚜렷합니다.</p>
-                    <p><strong>2. 리더님의 정직한 소구 전략</strong><br/>"고객님, 쓰지도 않는 최고급 뷔페 티켓을 매달 비싼 돈 주고 무조건 안고 가실 이유가 없습니다. 병원에 자주 가시지 않는다면, 필요한 만큼만 합리적으로 내고 평생 든든하게 유지하는 실속형 4세대 실손으로 체질을 개선하시는 것이 불황기 최고의 가계 절약 비법입니다. 남는 비용으로 핵심 암 진단비의 든든한 쉴드를 추가하시는 방향을 제가 맞춤 제안해 드립니다."</p>
-                ` 
+                    <h3>⚖️ 일배책 중복 가입 시 자기부담금 상쇄 메커니즘과 교육적 정밀 분석</h3>
+                    <p>보상 실무에서 가장 빈번하게 논의되면서도, 여전히 세부 원리를 정확히 정립하지 못해 놓치기 쉬운 <strong>'가족일상생활배상책임(이하 일배책) 특약의 중복 가입 시 본인부담금 상쇄 법리'</strong>를 대법원 2002다61168 판결을 근거로 분석합니다.</p>
+                    
+                    <div class="instructor-guide">
+                        <p className="text-base font-black text-orange-800 m-0 mb-2">🎓 [지점 리더 가이드] 현장 교육 시 반드시 정립해야 할 강의 핵심</p>
+                        <p className="text-sm text-orange-700 leading-relaxed m-0">
+                            본 교육의 목표는 일배책의 단순한 유용성을 넘어, **"우리 같은 프로들이 고객의 숨겨진 권리를 찾아주는 전문 동반자가 되어야 한다"**는 본질을 심어주는 데 있습니다. 보상 실무 과정에서 기계적인 정산 처리로 인해 계약자 자부담 20만 원이 불합리하게 공제되는 사례가 빈번합니다. 이 정밀한 법적 원리를 명확하게 전수하여 현장의 전문성 수준을 차별화해 주십시오.
+                        </p>
+                    </div>
+
+                    <h4>1. 보상 원리를 이해하기 위한 핵심 개념의 명확한 정의</h4>
+                    <p>약관과 사법부 판례를 정독할 때 마주하는 낯선 어휘들을 먼저 논리적으로 정의하여 강의의 명확성을 높입니다.</p>
+                    <ul>
+                        <li><strong>독립책임액 분담원칙</strong>: 예컨대 타인의 자산에 누수 사고로 100만 원의 손해배상 책임이 발생했을 때, 복수의 보험사가 타 계약의 존재 여부와 무관하게 산출해 낸 각각의 지급 한도(독립책임액) 비율에 의거하여 분담 지급하는 상법상의 공평한 손해 분담 규칙입니다.</li>
+                        <li><strong>자기부담금(면책금)</strong>: 과도한 소액 보상 청구를 방지하고 도덕적 해이를 막기 위해, 대물 사고 발생 시 계약자가 일정 수준(통상 20만 원)을 분담하도록 규정해 놓은 약정 금액입니다.</li>
+                    </ul>
+
+                    <h4>2. 대법원이 판시한 권리 방어의 법리적 배경</h4>
+                    <p>실제 소송 사건에서 다수의 보험사는 개별 계약의 약관에 규정된 '본인부담금 공제' 조항을 개별적으로 적용하여 각각 20만 원씩을 제한 후 보험금을 지급하겠다는 논리를 고수했습니다. 그러나 대법원은 사법부의 엄격한 상법 해석 기준에 따라 이를 전면 반박했습니다.</p>
+                    <p>판결 요지는 다음과 같습니다. 동일한 사고에 대해 여러 개의 배상책임 특약이 구동되는 '중복보험' 구도에 진입하고 각 사의 독립책임액 합산액이 실제 발생한 손해액보다 크게 구성되는 경우, 세부 산정식에 근거한 상법상의 비례 분배 처리가 우선됩니다. 이에 따라 <strong>계약자가 부담해야 할 자부담 한도는 보험사들이 책임을 나누어 가지는 계산 과정에서 상호 상쇄되어 소멸하는 구조</strong>를 취하게 됩니다. 결과적으로 가입자는 법리적으로 추가 부담금 없이 실제 피해액에 대한 100% 정상 전액 보상을 실현할 수 있게 됩니다.</p>
+
+                    <h4>3. 비즈니스 미팅에서 즉시 발휘되는 논리적 터치 스크립트</h4>
+                    <p>미팅 현장에서 우리 같은 프로들이 가망 고객의 포트폴리오를 점검하며 신뢰도를 제고할 수 있는 정교한 대화 예시입니다.</p>
+                    <p><strong>[전문 상담 스크립트]</strong>: "고객님, 일상에서 일어날 수 있는 아랫집 누수 손해나 예기치 못한 타인의 재물 파손 사고가 발생하면 참으로 막막하기 마련입니다. 보통 보장 처리가 되더라도 수십만 원의 약정 자부담금이 불필요한 현금 지출로 이어지게 되지요. 하지만 가족분들이 지니고 계신 다각도의 보장 포트폴리오를 정밀하게 진단하여, 최소한의 비용으로 설계된 일배책 특약을 정교하게 분산 배치해 두면 이야기가 달라집니다. 큰 사고가 터졌을 때 대법원의 확고한 중복보험 판례에 의거하여, <strong>그 본인부담금 20만 원이 법적으로 완벽하게 면제되어 0원</strong>으로 처리됩니다. 이러한 보이지 않는 권리와 법적 이익까지 완벽하게 관리해 드리는 것, 그것이 바로 세련된 인생 안전망을 설계하는 저의 역할입니다."</p>
+                `
             }
         ];
 
-        // 31일 콘텐츠 생성용 매커니즘
+        const SEED_INDUSTRY = [
+            {
+                category: "FSS",
+                title: "4세대 실손보험 비급여 차등제 전격 시행의 본질과 가계 고정비 리밸런싱 해법",
+                summary: "무분별한 비급여 청구 가입자에게 최대 300%까지 할증을 매기는 4세대 실손 차등제 지침의 근본적인 원인을 조명합니다. 갱신 폭탄의 두려움을 안심으로 바꾸고, 옛날 실손의 무거운 거품을 걷어내어 보험료를 반값 이하로 떨어뜨리는 동시에 우리만의 비갱신형 코어 담보를 단단하게 보완하는 우리 같은 프로들을 위한 역발상 상담 전략입니다.",
+                fullContent: `
+                    <h3>📊 4세대 실손 비급여 차등제의 진짜 배경과 똑똑한 보험료 다이어트 비법</h3>
+                    <p>리더 여러분, 최근 금융감독원에서 연일 강조하고 있는 <strong>'4세대 실손의료보험 비급여 차등제 및 할증 제도'</strong> 때문에 고객분들이 불안해하시는 목소리를 많이 들으실 겁니다. "이제 무서워서 실손 청구도 마음대로 못 하겠다", "보험료 엄청 오르는 것 아니냐"며 걱정하시는 지금이, 우리에게는 가만히 앉아서 대형 계약을 만들어낼 수 있는 최고의 기회입니다. 이 제도가 왜 나왔고, 어떻게 활용해야 하는지 샅샅이 파헤쳐 보겠습니다.</p>
+                    
+                    <h4>1. 이 정책이 왜 나왔는지, 숨겨진 배경부터 이해하셔야 합니다</h4>
+                    <p>우리가 과거에 많이 판매했던 1세대, 2세대 옛날 실손보험는 혜택은 정말 좋았습니다. 하지만 치명적인 문제가 있었습니다. 병원에 거의 가지 않는 대다수의 선량한 가입자들은 가만히 있는데, 일부 극소수의 가입자들이 일부 부도덕한 병원과 짜고 영양제 주사나 비싼 비급여 도수치료를 1년에 수백 번씩 받으며 보험금을 타갔던 겁니다. 이 때문에 보험회사의 손해율이 하늘을 찌를 듯이 치솟았고, 그 적자를 메우기 위해 병원에 한 번도 안 간 선량한 우량 가입자들까지 똑같이 묶여서 매년 엄청난 '갱신 보험료 폭탄'을 맞아야 했습니다. 내가 쓰지도 않은 병원비를 남 대신 내주고 있었던 셈이죠.</p>
+                    <p>정부가 이 억울한 구조를 더 이상 두고 볼 수 없어서 만든 제도가 바로 4세대 실손입니다. 핵심은 아주 심플합니다. <strong>"자동차 보험처럼, 병원비 많이 쓴 사람은 보험료를 더 내고, 안 쓴 사람은 깎아주겠다"</strong>는 원칙입니다.</p>
+                    <ul>
+                        <li><strong>직전 1년간 비급여 청구를 안 한 고객</strong>: 전체 가입자의 대부분을 차지하는 이 우량 고객분들은 다음 해 비급여 보험료의 10% 수준을 즉시 할인받습니다. 아주 합리적이죠.</li>
+                        <li><strong>연간 비급여 보험금을 300만 원 넘게 타간 가입자</strong>: 무분별하게 비급여를 남용한 분들에게는 원래 내던 비급여 보험료의 최대 300%, 즉 3배까지 할증을 매기는 강력한 페널티를 줍니다.</li>
+                    </ul>
+
+                    <h4>2. 위기를 대형 계약으로 바꾸는 역발상 세일즈 가이드</h4>
+                    <p>고객들이 할증 제도를 무서워하며 몸을 사릴 때, 우리는 불안감을 안심으로 바꿔주는 구원투수가 되어야 합니다. 매달 20만 원, 30만 원씩 기하급수적으로 오르는 옛날 실손보험을 붙잡고 끙끙 앓는 고객들을 찾아가십시오. 그리고 4세대 실손으로 가볍게 전환시켜서 매월 세어나가는 고정 비용을 즉각 반값 이하로 뚝 떨어뜨려 드리는 겁니다.</p>
+                    <p>그렇게 해서 아낀 소중한 가계 주머니 속 여유 자금을 가지고, <strong>아무리 병원에 자주 가고 청구를 많이 해도 보험료가 단 1원도 오르지 않고 영구 고정되는 '당사만의 비갱신형 코어 담보(종합 수술비, 3대 진단비)'를 단단하게 보완</strong>해 주는 리밸런싱이 바로 핵심 정답입니다.</p>
+                    <p><strong>[가망 고객 소구 스크립트]</strong>: "고객님, 밥상 물가도 오르는데 매달 몇십만 원씩 무섭게 오르는 옛날 실손보험을 그대로 쥐고 계시는 게 가계 경제에서 가장 위험한 구멍입니다. 이제는 영리하게 바꾸셔야 합니다. 실손보험은 쓴 만큼만 내는 가볍고 저렴한 4세대로 바꾸셔서 매달 나가는 고정 지출을 즉각 10만 원 넘게 아끼세요. 그리고 그렇게 아끼신 귀한 돈으로, 내가 앞으로 큰 병에 걸려 병원에 백 번을 가든 천 번을 청구하든 <strong>평생 보험료 인상이 영구적으로 동결되는 든든한 비갱신형 수술비와 진단비 울타리</strong>를 새로 채워두시는 겁니다. 청구할 때마다 보험료 오를까 봐 전전긍긍하는 불안한 실손의 약점을 완벽하게 메우고, 아무리 청구해도 내 자산으로 고정되는 진짜 똑똑한 재테크를 지금 이 시점에 저와 함께 시작해 보시죠."</p>
+                `
+            }
+        ];
+
+        const DAILY_DATA_BANK = {};
         for (let day = 1; day <= 31; day++) {
-            const slides = [
-                SEED_MOTIVATIONS[(day - 1) % SEED_MOTIVATIONS.length],
-                SEED_MOTIVATIONS[day % SEED_MOTIVATIONS.length],
-                SEED_MOTIVATIONS[(day + 1) % SEED_MOTIVATIONS.length]
-            ];
-            
-            const economy = SEED_ECONOMY[(day - 1) % SEED_ECONOMY.length];
-            
-            const newsList = [
-                { ...SEED_NEWS[0], title: `[${day}일의 보상실무] ${SEED_NEWS[0].title.substring(5)}` },
-                { ...SEED_NEWS[1], title: `[${day}일의 판례특보] ${SEED_NEWS[1].title.substring(5)}` },
-                { ...SEED_NEWS[2], title: `[${day}일의 한화소식] ${SEED_NEWS[2].title.substring(5)}` },
-                { ...SEED_NEWS[3], title: `[${day}일의 금감원뉴스] ${SEED_NEWS[3].title.substring(5)}` }
-            ];
+            const motivation = SEED_MOTIVATIONS[0];
+            const claimsReport = SEED_NEWS[0];
+            const industryReport = SEED_INDUSTRY[0];
 
             DAILY_DATA_BANK[day] = {
-                motivation: { slides },
-                economy,
-                newsList
+                motivation: {
+                    ...motivation,
+                    text: `[제${day}일의 부스트] ${motivation.text}`
+                },
+                claimsReport: {
+                    ...claimsReport,
+                    rawTitle: `⚖️ [제${day}강] ${claimsReport.rawTitle}`
+                },
+                industryReport: {
+                    ...industryReport,
+                    title: `📢 [제${day}신] ${industryReport.title}`
+                }
             };
         }
 
         function App() {
             const [selectedNews, setSelectedNews] = useState(null);
-            const [currentSlide, setCurrentSlide] = useState(0);
-            const [progress, setProgress] = useState(0);
             const [todayKST, setTodayKST] = useState("");
             const [isCopying, setIsCopying] = useState(false);
+            const [simulatedDay, setSimulatedDay] = useState("");
 
-            // 실시간 날짜 추출 및 08:30 기준 이전일/당일자 매핑 세트 동적 판정 로직
             const getKSTDateMetrics = useCallback(() => {
                 const now = new Date();
-                const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-                const kstDate = new Date(utc + (3600000 * 9)); // KST (UTC+9)
-
-                const currentHour = kstDate.getHours();
-                const currentMinute = kstDate.getMinutes();
-
-                let activeDate = new Date(kstDate);
-                if (currentHour < 8 || (currentHour === 8 && currentMinute < 30)) {
-                    activeDate.setDate(activeDate.getDate() - 1);
+                const formatter = new Intl.DateTimeFormat('ko-KR', {
+                    timeZone: 'Asia/Seoul', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false
+                });
+                const parts = formatter.formatToParts(now);
+                const partValues = {};
+                parts.forEach(part => { partValues[part.type] = part.value; });
+                
+                const year = parseInt(partValues.year, 10);
+                const month = parseInt(partValues.month, 10);
+                const day = parseInt(partValues.day, 10);
+                const hour = parseInt(partValues.hour, 10);
+                const minute = parseInt(partValues.minute, 10);
+                
+                let kstMoment = new Date(Date.UTC(year, month - 1, day, hour, minute));
+                if (hour < 8 || (hour === 8 && minute < 30)) {
+                    kstMoment.setUTCDate(kstMoment.getUTCDate() - 1);
                 }
-
                 return {
-                    year: activeDate.getFullYear(),
-                    month: String(activeDate.getMonth() + 1).padStart(2, '0'),
-                    day: String(activeDate.getDate()).padStart(2, '0'),
-                    dayValue: activeDate.getDate() // 1 ~ 31
+                    year: kstMoment.getUTCFullYear(),
+                    month: String(kstMoment.getUTCMonth() + 1).padStart(2, '0'),
+                    day: String(kstMoment.getUTCDate()).padStart(2, '0'),
+                    dayValue: kstMoment.getUTCDate()
                 };
             }, []);
 
             useEffect(() => {
                 const metrics = getKSTDateMetrics();
                 setTodayKST(`${metrics.year}. ${metrics.month}. ${metrics.day}`);
-                
                 const timeTracker = setInterval(() => {
                     const nextMetrics = getKSTDateMetrics();
                     setTodayKST(`${nextMetrics.year}. ${nextMetrics.month}. ${nextMetrics.day}`);
@@ -305,53 +268,24 @@
                 return () => clearInterval(timeTracker);
             }, [getKSTDateMetrics]);
 
-            // 오늘 자 매핑된 안전 콘텐츠 세트 추출 (31일 데이터 완벽 격리)
             const activeData = useMemo(() => {
+                if (simulatedDay) {
+                    return DAILY_DATA_BANK[parseInt(simulatedDay, 10)] || DAILY_DATA_BANK[1];
+                }
                 const metrics = getKSTDateMetrics();
                 return DAILY_DATA_BANK[metrics.dayValue] || DAILY_DATA_BANK[1];
-            }, [getKSTDateMetrics, todayKST]);
+            }, [getKSTDateMetrics, todayKST, simulatedDay]);
 
-            // 동기부여 명언 자동 순환 슬라이더 엔진 (8초 지속)
             useEffect(() => {
-                const slideDuration = 8000; 
-                const interval = 50;
-                const step = (interval / slideDuration) * 100;
-
-                const timer = setInterval(() => {
-                    setProgress(prev => {
-                        if (prev >= 100) {
-                            setCurrentSlide(s => (s + 1) % activeData.motivation.slides.length);
-                            return 0;
-                        }
-                        return prev + step;
-                    });
-                }, interval);
-
-                return () => clearInterval(timer);
-            }, [activeData]);
-
-            // 모달 팝업이 활성화되었을 때, 배경 Body 스크롤을 완벽 차단하는 고성능 이펙트
-            useEffect(() => {
-                if (selectedNews) {
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style.overflow = 'unset';
-                }
-                return () => {
-                    document.body.style.overflow = 'unset';
-                };
+                document.body.style.overflow = selectedNews ? 'hidden' : 'unset';
+                return () => { document.body.style.overflow = 'unset'; };
             }, [selectedNews]);
 
-            // HTML 태그 제거 후 클립보드 안전 복사
             const handleCopyText = (htmlContent) => {
                 const cleanText = htmlContent.replace(/<[^>]*>/g, '').trim();
-                
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(cleanText)
-                        .then(() => {
-                            setIsCopying(true);
-                            setTimeout(() => setIsCopying(false), 2000);
-                        })
+                        .then(() => { setIsCopying(true); setTimeout(() => setIsCopying(false), 2000); })
                         .catch(() => fallbackCopyText(cleanText));
                 } else {
                     fallbackCopyText(cleanText);
@@ -361,250 +295,144 @@
             const fallbackCopyText = (text) => {
                 const textArea = document.createElement("textarea");
                 textArea.value = text;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-999999px";
-                textArea.style.top = "-999999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    setIsCopying(true);
-                    setTimeout(() => setIsCopying(false), 2000);
-                } catch (err) {
-                    console.error("복사에 실패했습니다.", err);
-                }
+                textArea.style.position = "fixed"; textArea.style.left = "-999999px";
+                document.body.appendChild(textArea); textArea.focus(); window.scrollTo(0,0); textArea.select();
+                try { document.execCommand('copy'); setIsCopying(true); setTimeout(() => setIsCopying(false), 2000); } catch (err) {}
                 document.body.removeChild(textArea);
             };
 
             const CategoryTag = ({ type }) => {
                 const configs = {
-                    HANWHA: { label: "한화 소식", color: "bg-orange-500", icon: "sun" },
-                    FSS: { label: "금감원 정책", color: "bg-blue-600", icon: "shield-check" },
-                    CLAIMS: { label: "보상 실무 리포트", color: "bg-red-600", icon: "scale" },
-                    ECONOMY: { label: "생활 경제", color: "bg-emerald-600", icon: "trending-up" },
-                    MOTIVATION: { label: "모닝 인사이트", color: "bg-rose-500", icon: "flame" },
+                    HANWHA: { label: "한화 독점 소식", color: "bg-orange-500", icon: "sun" },
+                    FSS: { label: "금감원 정책 가이드", color: "bg-blue-600", icon: "shield-check" },
+                    CLAIMS: { label: "손해사정 판례특보", color: "bg-red-600", icon: "scale" },
+                    ECONOMY: { label: "생활 경제 인사이트", color: "bg-emerald-600", icon: "trending-up" },
+                    MOTIVATION: { label: "모닝 비즈니스 에세이", color: "bg-rose-500", icon: "flame" },
                 };
                 const config = configs[type] || configs.HANWHA;
                 return (
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black text-white uppercase tracking-wider ${config.color}`}>
-                        <CustomIcon name={config.icon} size={11} />
-                        {config.label}
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider ${config.color}`}>
+                        <CustomIcon name={config.icon} size={10} /> {config.label}
                     </span>
                 );
             };
 
             return (
-                <div className="min-h-screen pb-20 bg-[#FDFDFD]">
-                    {/* GNB 영역 */}
-                    <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-gray-100">
-                        <div className="max-w-2xl mx-auto px-6 h-18 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <div className="w-9 h-9 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-200">
-                                    <CustomIcon name="sun" className="text-white" size={18} />
+                <div className="min-h-screen pb-12 bg-[#F9F9FB]">
+                    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
+                        <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5">
+                                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center shadow-md shadow-orange-200">
+                                    <CustomIcon name="sun" className="text-white" size={16} />
                                 </div>
-                                <span className="font-black text-xl tracking-tighter uppercase">Leaders <span className="text-orange-500 font-medium">Insight</span></span>
+                                <span className="font-black text-lg tracking-tighter uppercase text-gray-900">Leaders <span className="text-orange-500 font-medium">Insight</span></span>
                             </div>
-                            <div className="flex items-center gap-2 px-3.5 py-2 bg-gray-50 rounded-full border border-gray-100">
-                                <CustomIcon name="clock" className="text-orange-500" size={13} />
-                                <span className="text-[10.5px] font-black text-gray-500 uppercase tracking-tight animate-pulse">
-                                    {todayKST} | 08:30 AM JUST UPDATED
-                                </span>
+                            <div className="flex items-center gap-1.5 max-w-[50%]">
+                                <select value={simulatedDay} onChange={(e) => setSimulatedDay(e.target.value)} className="w-full appearance-none bg-gray-50 border border-gray-200 rounded-lg px-4 py-1.5 text-[11px] font-bold text-gray-700 focus:outline-none cursor-pointer truncate">
+                                    <option value="">📅 실시간 자동 교대</option>
+                                    {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
+                                        <option key={day} value={day}>📅 {day}일자 콘텐츠 정밀 검증</option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
                     </nav>
 
-                    {/* 메인 콘텐츠 영역 */}
-                    <main className="max-w-2xl mx-auto px-6 py-10 space-y-16 animate-slide-up">
-                        <header className="space-y-4">
-                            <div className="flex items-center gap-2">
-                                <div className="p-1.5 bg-orange-50 rounded-lg text-orange-600">
-                                    <CustomIcon name="flame" size={14} />
-                                </div>
-                                <span className="text-[11px] font-black text-orange-600 uppercase tracking-[0.25em]">Morning Insight Letter</span>
+                    {}
+                    <main className="max-w-2xl mx-auto px-4 py-8 space-y-10 animate-slide-up">
+                        <header className="space-y-2">
+                            <div className="flex items-center gap-1.5">
+                                <div className="p-1 bg-orange-100 rounded text-orange-600"><CustomIcon name="flame" size={12} /></div>
+                                <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest">Premium Boost Portal</span>
                             </div>
-                            <h2 className="text-4xl font-black leading-tight tracking-tight text-gray-900">
-                                프로 리더님을 위한<br/><span className="text-orange-500">오늘 아침의 레터</span>
-                            </h2>
-                            <p className="text-gray-400 font-semibold text-sm leading-relaxed max-w-md">
-                                {todayKST} 오전 8시 30분, 손해사정 실무 판례 및 법률 정보가 31일 무인 자동 업데이트 필터에 의해 정격 매핑되었습니다.
+                            <h2 className="text-2xl md:text-3xl font-black leading-tight tracking-tight text-gray-900">영업 명장을 위한<br/><span className="text-orange-500">오늘의 심층 리포트</span></h2>
+                            <p className="text-gray-400 font-semibold text-[11px] leading-relaxed">
+                                {simulatedDay ? <span className="text-orange-600 font-extrabold bg-orange-50 px-2 py-1 rounded border border-orange-100">데이터 시뮬레이션 작동 중</span> : "리더분들의 전문적인 소양 축적과 학술 연구를 위한 사법부 판례 해설 및 규정집이 매일 오전 업데이트됩니다."}
                             </p>
                         </header>
 
-                        {/* 3단계 순환식 동기부여 모닝 인사이트 카드뉴스 */}
-                        <section className="relative h-[550px] rounded-[3.5rem] overflow-hidden shadow-2xl shadow-gray-200 bg-black">
-                            <div className="absolute top-8 left-0 w-full px-8 flex gap-2 z-20">
-                                {activeData.motivation.slides.map((_, idx) => (
-                                    <div key={idx} className="h-1 flex-1 bg-white/20 rounded-full overflow-hidden">
-                                        <div 
-                                            className="h-full bg-orange-500"
-                                            style={{ 
-                                                width: idx === currentSlide ? `${progress}%` : idx < currentSlide ? '100%' : '0%',
-                                                transition: idx === currentSlide ? 'none' : 'width 0.2s ease'
-                                            }}
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-
-                            {activeData.motivation.slides.map((slide, idx) => (
-                                <div 
-                                    key={idx}
-                                    className={`absolute inset-0 transition-all duration-1000 transform ${idx === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'}`}
-                                >
-                                    <img src={slide.image} className="w-full h-full object-cover" alt="" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/45 to-transparent" />
-                                    
-                                    <div className="absolute bottom-0 left-0 p-12 w-full space-y-8">
-                                        <div className="space-y-4">
-                                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-[10px] font-bold text-white uppercase tracking-widest">
-                                                <CustomIcon name="quote" className="text-orange-400" size={12} /> Morning Insight
-                                            </div>
-                                            <h3 className="text-2xl md:text-3xl font-black text-white leading-tight break-keep">{slide.text}</h3>
-                                            <p className="text-white/80 text-base font-medium leading-relaxed break-keep line-clamp-3">{slide.subText}</p>
-                                        </div>
-                                        
-                                        <div className="pt-2">
-                                            <button 
-                                                onClick={() => setSelectedNews({ ...slide, category: 'MOTIVATION', title: slide.text })}
-                                                className="w-full flex items-center justify-center gap-3 py-4 bg-white text-gray-900 rounded-2xl font-black text-sm hover:bg-orange-500 hover:text-white transition-all shadow-xl active:scale-95"
-                                            >
-                                                스토리 전체 읽기 <CustomIcon name="external-link" size={14} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </section>
-
-                        {/* 생활 경제 섹션 */}
-                        <section className="space-y-6">
-                            <div className="flex items-center gap-2 text-emerald-600">
-                                <div className="p-2 bg-emerald-50 rounded-xl"><CustomIcon name="trending-up" size={20} /></div>
-                                <h3 className="font-black text-2xl tracking-tight text-gray-900">생활 경제 인사이트</h3>
-                            </div>
-                            <div 
-                                onClick={() => setSelectedNews({ ...activeData.economy, category: 'ECONOMY' })}
-                                className="group p-10 bg-white border border-gray-100 rounded-[3.5rem] shadow-xl shadow-gray-200/40 cursor-pointer transition-all hover:-translate-y-1 hover:border-emerald-200"
-                            >
-                                <div className="space-y-5">
-                                    <CategoryTag type="ECONOMY" />
-                                    <h4 className="text-2xl font-black text-gray-900 leading-snug group-hover:text-emerald-700 transition-colors">{activeData.economy.title}</h4>
-                                    <p className="text-gray-500 text-base font-semibold leading-relaxed line-clamp-2">{activeData.economy.summary}</p>
-                                    <div className="pt-2 flex items-center gap-1 text-xs font-black text-emerald-600 uppercase tracking-widest">
-                                        상세 인사이트 보기 <CustomIcon name="external-link" size={13} />
-                                    </div>
-                                </div>
+                        <section className="group relative h-[420px] rounded-[2rem] overflow-hidden shadow-xl shadow-gray-200 bg-black cursor-pointer"
+                                 onClick={() => setSelectedNews({ ...activeData.motivation, category: 'MOTIVATION', title: activeData.motivation.text })}>
+                            <img src={activeData.motivation.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-85" alt="" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-transparent" />
+                            <div className="absolute bottom-0 left-0 p-6 w-full space-y-3">
+                                <CategoryTag type="MOTIVATION" />
+                                <h3 className="text-lg md:text-2xl font-black text-white leading-snug break-keep">{activeData.motivation.text}</h3>
+                                <p className="text-white/80 text-xs leading-relaxed break-keep line-clamp-4">{activeData.motivation.subText}</p>
+                                <div className="pt-2 flex items-center gap-1 text-[10px] font-black text-orange-400 uppercase tracking-widest">분석 에세이 원문 읽기 <CustomIcon name="external-link" size={10} /></div>
                             </div>
                         </section>
 
-                        {/* 업계 데일리 리포트 섹션 */}
-                        <section className="space-y-6">
-                            <div className="flex items-center gap-2 text-gray-900">
-                                <div className="p-2 bg-gray-100 rounded-xl"><CustomIcon name="book-open" size={20} /></div>
-                                <h3 className="font-black text-2xl tracking-tight text-gray-900">보험업계 데일리 리포트</h3>
+                        {}
+                        <section className="space-y-4">
+                            <div className="flex items-center gap-1.5 text-gray-900 pb-1">
+                                <div className="p-1.5 bg-gray-100 rounded-lg"><CustomIcon name="book-open" size={16} /></div>
+                                <h3 className="font-black text-lg tracking-tight text-gray-900">오늘의 종합 교육 매뉴얼</h3>
                             </div>
-                            <div className="grid grid-cols-1 gap-6">
-                                {activeData.newsList.map((news, idx) => (
-                                    <div 
-                                        key={idx}
-                                        onClick={() => setSelectedNews(news)}
-                                        className="group flex flex-col md:flex-row items-start gap-6 p-8 bg-white rounded-[3rem] border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all cursor-pointer"
-                                    >
-                                        <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center transition-all ${
-                                            news.category === 'CLAIMS' ? 'bg-red-50 text-red-600' : 'bg-gray-50 text-gray-400'
-                                        } group-hover:bg-orange-500 group-hover:text-white`}>
-                                            <CustomIcon name={news.category === 'HANWHA' ? 'sun' : news.category === 'FSS' ? 'shield-check' : 'scale'} size={24} />
-                                        </div>
-                                        <div className="flex-1 space-y-3">
-                                            <CategoryTag type={news.category} />
-                                            <h4 className="text-xl font-black text-gray-900 group-hover:text-orange-600 transition-colors break-keep">{news.title}</h4>
-                                            <p className="text-sm text-gray-400 font-semibold leading-relaxed italic line-clamp-1">{news.summary}</p>
-                                        </div>
-                                        <div className="self-center p-2 rounded-xl bg-gray-50 group-hover:bg-orange-50 text-gray-300 group-hover:text-orange-500 transition-all">
-                                            <CustomIcon name="external-link" size={16} />
-                                        </div>
+                            
+                            <div className="grid grid-cols-1 gap-4">
+                                <div onClick={() => setSelectedNews(activeData.claimsReport)} className="group flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-100 hover:border-red-200 hover:shadow-xl transition-all cursor-pointer">
+                                    <div className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-red-50 text-red-600 group-hover:bg-red-500 group-hover:text-white transition-all"><CustomIcon name="scale" size={20} /></div>
+                                    <div className="flex-1 space-y-2 min-w-0">
+                                        <CategoryTag type="CLAIMS" />
+                                        <h4 className="text-base font-black text-gray-900 group-hover:text-red-700 transition-colors break-keep leading-snug">{activeData.claimsReport.rawTitle}</h4>
+                                        <p className="text-xs text-gray-500 leading-relaxed line-clamp-4">{activeData.claimsReport.summary}</p>
+                                        <div className="pt-1 flex items-center gap-0.5 text-[10px] font-black text-red-600">학술적 판례 해설 및 스크립트 보기 <CustomIcon name="external-link" size={9} /></div>
                                     </div>
-                                ))}
+                                </div>
+
+                                <div onClick={() => setSelectedNews(activeData.industryReport)} className="group flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all cursor-pointer">
+                                    <div className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-orange-50 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all"><CustomIcon name={activeData.industryReport.category === 'FSS' ? 'shield-check' : 'sun'} size={20} /></div>
+                                    <div className="flex-1 space-y-2 min-w-0">
+                                        <CategoryTag type={activeData.industryReport.category} />
+                                        <h4 className="text-base font-black text-gray-900 group-hover:text-orange-600 transition-colors break-keep leading-snug">{activeData.industryReport.title}</h4>
+                                        <p className="text-xs text-gray-500 leading-relaxed line-clamp-4">{activeData.industryReport.summary}</p>
+                                        <div className="pt-1 flex items-center gap-0.5 text-[10px] font-black text-orange-500">시장 전망 및 포트폴리오 가이드 보기 <CustomIcon name="external-link" size={9} /></div>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                     </main>
 
-                    {/* 푸터 영역 */}
-                    <footer className="py-20 text-center border-t border-gray-100 max-w-2xl mx-auto px-6">
-                        <div className="space-y-4">
-                            <div className="w-8 h-8 bg-gray-100 rounded-xl flex items-center justify-center mx-auto text-gray-400">
-                                <CustomIcon name="sun" size={16} />
-                            </div>
-                            <p className="text-[11px] font-black text-gray-400 uppercase tracking-[0.4em]">Leaders Insight Portal</p>
-                            <p className="text-[9.5px] font-bold text-gray-300 uppercase tracking-widest">
-                                © {todayKST.split('.')[0]} Leaders Insight System. All contents are highly confidential and protected.
-                            </p>
-                        </div>
-                    </footer>
-
-                    {/* 모달 팝업 상세창 */}
+                    {}
                     {selectedNews && (
-                        <div className="fixed inset-0 z-[100] flex items-start md:items-center justify-center p-0 md:p-6 lg:p-12">
-                            {/* 배경 딤드 레이어 */}
-                            <div className="absolute inset-0 bg-gray-950/80 backdrop-blur-md animate-fade-in" onClick={() => setSelectedNews(null)} />
-                            
-                            {/* 모달 본체 */}
-                            <div className="relative bg-white w-full max-w-4xl h-full md:h-auto md:max-h-[90vh] overflow-hidden rounded-none md:rounded-[3.5rem] shadow-2xl animate-in slide-in-from-bottom-20 duration-500 flex flex-col z-10">
-                                <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-100 px-8 py-5 flex items-center justify-between z-20">
-                                    <div className="flex items-center gap-4">
-                                        <span className={`w-3 h-3 rounded-full ${selectedNews.category === 'CLAIMS' ? 'bg-red-600 animate-pulse' : 'bg-orange-500'}`} />
-                                        <span className="text-xs font-black text-gray-400 uppercase tracking-widest">{selectedNews.category} Report</span>
+                        <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4">
+                            <div className="absolute inset-0 bg-gray-950/70 backdrop-blur-sm" onClick={() => setSelectedNews(null)} />
+                            <div className="relative bg-white w-full max-w-2xl h-[88vh] md:h-auto md:max-h-[85vh] overflow-hidden rounded-t-3xl md:rounded-3xl shadow-2xl flex flex-col z-10 animate-slide-up">
+                                <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-100 px-5 py-4 flex items-center justify-between z-20">
+                                    <div className="flex items-center gap-2">
+                                        <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">{selectedNews.category} Educational Document</span>
                                     </div>
-                                    <button onClick={() => setSelectedNews(null)} className="p-2.5 hover:bg-gray-100 rounded-2xl transition-all text-gray-400"><CustomIcon name="x" size={24} /></button>
+                                    <button onClick={() => setSelectedNews(null)} className="p-1.5 hover:bg-gray-100 rounded-xl text-gray-400"><CustomIcon name="x" size={20} /></button>
                                 </div>
-                                
-                                <div className="flex-1 overflow-y-auto p-8 md:p-16 lg:p-20 custom-scrollbar">
-                                    <div className="max-w-3xl mx-auto">
-                                        <h2 className="text-3xl md:text-4.5xl font-black text-gray-900 leading-[1.15] mb-10 break-keep">{selectedNews.title}</h2>
-                                        
-                                        {/* 뉴스 본문 내용 마크다운식 렌더링 */}
+                                <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+                                    <div className="space-y-6">
+                                        <h2 className="text-xl md:text-2xl font-black text-gray-900 leading-snug break-keep">{selectedNews.title || selectedNews.rawTitle}</h2>
                                         <div className="article-body" dangerouslySetInnerHTML={{ __html: selectedNews.fullContent }} />
                                         
-                                        {/* 판례 출처 링크 (디렉트 상세페이지 팝업 연결) */}
                                         {selectedNews.sourceUrl && (
-                                            <div className="mt-12 p-8 bg-slate-50 border border-slate-100 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="p-3 bg-white rounded-xl text-gray-400 shadow-sm"><CustomIcon name="file-text" size={20} /></div>
+                                            <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl flex flex-col gap-3">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="p-2 bg-white rounded-lg text-gray-400 shadow-sm"><CustomIcon name="file-text" size={16} /></div>
                                                     <div>
-                                                        <p className="text-sm font-black text-gray-900">법적 효력 판결문 및 보도자료 직송 연동</p>
-                                                        <p className="text-xs text-gray-400">대법원 정식 공판 판례집 및 원문 요약 자료로 즉시 이동합니다.</p>
+                                                        <p className="text-xs font-black text-gray-900">대한민국 법원 종합법률정보 판례 고증</p>
+                                                        <p className="text-[10px] text-gray-400">대법원 선고 원본 데이터 연동</p>
                                                     </div>
                                                 </div>
-                                                <a 
-                                                    href={selectedNews.sourceUrl} 
-                                                    target="_blank" 
-                                                    rel="noopener noreferrer"
-                                                    className="flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl text-xs font-black hover:bg-black transition-all"
-                                                >
-                                                    정식 원문 팝업 조회 <CustomIcon name="external-link" size={14} />
-                                                </a>
+                                                <a href={selectedNews.sourceUrl} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-gray-900 text-white rounded-lg text-xs font-black hover:bg-black transition-all">공식 판결문 원본 확인하기 <CustomIcon name="external-link" size={11} /></a>
                                             </div>
                                         )}
-
-                                        {/* 보상 관련 필수 고지 의무 영역 */}
-                                        <div className="mt-8 p-6 bg-red-50/80 border-l-4 border-red-500 text-sm text-red-800 font-bold leading-relaxed rounded-r-2xl">
-                                             ⚠️ 필수 고지 사항: 본 레터에 기술된 보상 청구 및 수리 사례는 판례 해석을 기반으로 작성되었습니다.<br/>
-                                             지점 리더님은 고객 상담 시 실제 보상 여부 및 지급 한도액은 반드시 가입하신 개별 계약 상품의 약관 전문 및 가입 담보, 보상과의 최종 심사 결과에 따른다는 문구를 항상 명확히 고지하여 주십시오.
+                                        
+                                        <div className="p-4 bg-orange-50/50 border-l-4 border-orange-500 text-[11px] text-gray-500 font-medium leading-relaxed rounded-r-xl">
+                                             💡 본 교육자료는 리더분들의 전문 역량 강화와 신뢰도 높은 리서치 지원을 목적으로 기획되었습니다. 비즈니스 미팅 세미나 및 고객 세션 자료로 인용하여 활용하시기 바랍니다.
                                         </div>
 
-                                        {/* 내용 복사 버튼 영역 */}
-                                        <div className="mt-20 pt-12 border-t border-gray-100">
-                                             <button 
-                                                onClick={() => handleCopyText(selectedNews.fullContent)} 
-                                                className="w-full flex items-center justify-center gap-3 py-5 bg-orange-500 text-white font-black rounded-[2rem] hover:bg-orange-600 transition-all shadow-2xl shadow-orange-200 active:scale-95 text-base"
-                                             >
-                                                 <CustomIcon name={isCopying ? "check" : "copy"} size={18} />
-                                                 {isCopying ? "클립보드 복사 완료!" : "본문 전체 내용 복사하기 (고객 전송용)"}
+                                        <div className="pt-6 border-t border-gray-100 space-y-3">
+                                             <button onClick={() => handleCopyText(selectedNews.fullContent)} className="w-full flex items-center justify-center gap-2 py-4 bg-orange-500 text-white font-black rounded-xl hover:bg-orange-600 transition-all shadow-md text-sm">
+                                                 <CustomIcon name={isCopying ? "check" : "copy"} size={14} />
+                                                 {isCopying ? "텍스트가 클립보드에 복사되었습니다!" : "본문 내용 전체 복사하기 (미팅 제안 / 텍스트 배포용)"}
                                              </button>
-                                             <p className="mt-4 text-center text-[10.5px] text-gray-400 font-bold uppercase tracking-widest">
-                                                 * 회사 보안 관리 지침에 따라 외부 SNS 자동 공유 및 보관 기능은 제한되며, 사적인 상담용 텍스트 인용만 허용됩니다.
-                                             </p>
                                         </div>
                                     </div>
                                 </div>
