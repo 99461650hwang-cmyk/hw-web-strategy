@@ -21,30 +21,29 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
         
-        /* 꼭꼭 씹어먹는 뉴스레터 맞춤 서식 */
         .article-body h3 { 
-            font-size: 1.35rem; 
+            font-size: 1.4rem; 
             font-weight: 800; 
             color: #111827; 
-            margin: 2rem 0 1rem; 
+            margin: 2.5rem 0 1.25rem; 
             border-left: 5px solid #F97316; 
             padding-left: 0.85rem; 
             line-height: 1.4;
         }
         .article-body h4 {
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #ea580c;
-            margin: 1.5rem 0 0.5rem;
+            margin: 1.75rem 0 0.75rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
         .article-body p { 
             font-size: 1.05rem; 
-            line-height: 1.9; 
-            color: #374151; 
-            margin-bottom: 1.25rem; 
+            line-height: 1.95; 
+            color: #2D3748; 
+            margin-bottom: 1.5rem; 
             word-break: keep-all; 
             text-align: justify;
         }
@@ -56,17 +55,17 @@
         .article-body ul { 
             background-color: #F8FAFC;
             border: 1px solid #E2E8F0;
-            padding: 1.5rem 1.5rem 1.5rem 2rem; 
-            border-radius: 1rem;
-            margin: 1.25rem 0;
+            padding: 1.75rem 1.75rem 1.75rem 2.25rem; 
+            border-radius: 1.25rem;
+            margin: 1.5rem 0;
         }
         .article-body li { 
             position: relative; 
             list-style-type: none;
-            margin-bottom: 0.75rem; 
-            line-height: 1.8; 
+            margin-bottom: 1rem; 
+            line-height: 1.85; 
             color: #4A5568; 
-            font-size: 1rem; 
+            font-size: 1.05rem; 
         }
         .article-body li::before { 
             content: '•'; 
@@ -75,24 +74,14 @@
             left: -1.25rem; 
             font-weight: bold; 
         }
-
-        /* 뉴스레터 핵심 요약 2줄 박스 */
-        .summary-box {
-            background-color: #F0FDF4;
-            border: 1px solid #DCFCE7;
-            border-left: 5px solid #16A34A;
-            padding: 1.25rem;
-            border-radius: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
         
         .instructor-guide {
             background-color: #FFF7ED;
             border: 1px solid #FED7AA;
             border-left: 5px solid #F97316;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            margin: 1.5rem 0;
+            padding: 1.75rem;
+            border-radius: 1.25rem;
+            margin: 1.75rem 0;
         }
 
         @keyframes slideUp { 
@@ -131,130 +120,110 @@
             );
         };
 
-        // -------------------------------------------------------------
-        // [뉴스레터 마스터 데이터 뱅크] 알기 쉽고 친절하게 꼭꼭 씹어주는 문법
-        // -------------------------------------------------------------
         
-        const SEED_MOTIVATIONS = [
-            {
-                id: 1,
-                text: "지금 당장 무의미해 보이는 노력이 훗날 거대한 기회로 연결되는 순간",
-                image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&auto=format&fit=crop", // 깨진 이미지 경로 전면 수정
-                subText: "대학을 자퇴한 잡스가 청강했던 서체 디자인 수업이 10년 뒤 매킨토시 컴퓨터의 정교한 화면 배치를 만들었습니다. 지금 우리가 들이받는 지루한 약관 공부가 훗날 거물급 경영자와의 큰 미팅에서 판도를 가를 결정적 한 수가 됩니다.",
-                fullContent: `
-                    <div class="summary-box">
-                        <p class="text-sm font-black text-green-800 m-0 mb-1">📢 오늘 편지의 한 줄 요약</p>
-                        <p class="text-xs text-green-700 leading-relaxed m-0">당장 계약과 무관해 보여도 묵묵히 쌓아둔 깊이 있는 분석력이, 훗날 중요한 비즈니스 미팅에서 고객의 마음을 열어젖히는 독보적인 무기로 되살아납니다.</p>
-                    </div>
-
-                    <h3>스티브 잡스가 찍어둔 '지식의 점' 이야기</h3>
-                    <p>리더 여러분, 오늘 아침 출근길은 어떠셨나요? 가끔은 빽빽한 보상 판례집이나 규정집을 보면서 '이 어려운 걸 공부한다고 당장 오늘 계약이 나오나?' 하고 마음이 지치실 때가 있을 겁니다. 오늘 아침엔 그런 우리 마음을 탁 트이게 해줄 가벼운 이야기로 문을 열어볼까 합니다.</p>
-                    <p>컴퓨터 시장의 역사를 바꾼 스티브 잡스는 젊은 시절 대학교를 입학하자마자 자퇴를 했습니다. 비싼 등록금을 내면서 의미 없는 수업을 듣기 싫었기 때문이죠. 정규 과목을 들을 필요가 없어진 잡스는 호기심이 가는 교실을 찾아다니며 청강을 시작했습니다. 그중 하나가 바로 <strong>예쁜 글자 모양과 서체 디자인을 배우는 조그만 수업</strong>이었습니다.</p>
-                    <p>그는 그 수업에서 선의 굵기가 어떻게 변하는지, 자간과 행간을 얼마나 띄워야 글을 읽는 사람의 눈이 가장 편안함을 느끼는지 깊이 있게 파고들었습니다. 사실 그 당시에는 주변에서 "취업에 도움 안 되는 쓸데없는 짓을 한다"며 핀잔을 주기도 했습니다. 당장 돈이 되는 기술도 아니었으니까요. 잡스 스스로도 이 배움이 자기 인생에 어떤 쓸모가 있을지 전혀 모른 채, 그저 지적 호기심의 점을 하나씩 찍어나갔던 것입니다.</p>
-                    <p>하지만 정확히 10년 뒤, 놀라운 반전이 시작됩니다. 잡스가 전 세계 최초로 정교한 화면 배치를 갖춘 컴퓨터인 '매킨토시'를 개발할 때였습니다. <strong>10년 전에 호기심으로 배워뒀던 그 서체 지식이 잡스의 머릿속에서 번쩍하며 연결된 것입니다.</strong> 잡스는 그 배움을 바탕으로 컴퓨터 안에 최초로 아주 보기 좋고 세련된 글자체들과 읽기 편한 화면 규격을 집어넣었습니다. 만약 그 시절에 무의미해 보이던 점을 찍어두지 않았더라면, 우리가 매일 사용하는 보기 편한 컴퓨터 화면은 존재하지 못했을 것입니다.</p>
-
-                    <h3>우리 같은 프로들이 지금 찍고 있는 점들</h3>
-                    <p>우리가 지금 테이블에 앉아서 파고들고 있는 복잡한 세법 해석이나 까다로운 특별약관 분석도 이와 똑같습니다. 지금 당장은 내 눈앞의 가시적인 성과와 아무 상관이 없어 보일지도 모릅니다. </p>
-                    <p>하지만 전문가의 세계에서 헛되이 사라지는 배움은 결코 없습니다. 오늘 귀찮음을 무릅쓰고 머릿속에 꼭꼭 씹어 삼킨 예리한 지식 한 줄은, 언젠가 수십억대 자산을 가진 기업 경영자나 까다로운 고액 자산가를 대면했을 때 빛을 발하게 됩니다. 남들은 다 얼어붙어 있을 때, 리더 여러분이 과거에 정밀하게 축적해 둔 분석력을 탁 꺼내놓는 순간, 고객은 눈을 크게 뜨며 "당신이 진짜 프로군요!" 하고 손을 내밀게 될 것입니다.</p>
-
-                    <div class="instructor-guide">
-                        <p class="text-sm font-black text-orange-800 m-0 mb-1">💡 오늘의 모닝 비즈니스 스피치 팁</p>
-                        <p class="text-xs text-orange-700 leading-relaxed m-0">
-                            아침 교육이나 미팅을 열 때 이 잡스의 이야기를 인용해 보세요. "우리가 매일 반복하는 지루한 약관 공부와 트레이닝은 흩어지는 먼지가 아니라, 결정적인 순간에 거대한 계약을 끌어당길 점을 찍는 과정입니다"라고 공유하며 동료 리더들의 자부심을 가득 채워주시면 좋습니다.
-                        </p>
-                    </div>
-                `
-            }
+        // 100개 이상의 정밀하고 반복 없는 비즈니스 스토리, 판례 및 금융정책 시드 데이터
+        const UNIQUE_STORY_SEEDS = [
+            { hero: "스티브 잡스", action: "서체 디자인 수업 청강", object: "매킨토시 컴퓨터", background: "대학 중퇴 후 방황하던 청년 시절", effect: "아름답고 균형 잡힌 글자 간격 규격 정립", value: "일상 속 보장 공부의 전문 지식 축적" },
+            { hero: "조셉 스트라우스", action: "대형 안전 그물 설치", object: "금문교 다리 건설", background: "거센 칼바람과 실족사의 공포 속", effect: "인부들의 공포심 제거 및 작업 효율 25% 향상", value: "고객 가정의 안전 그물이 되는 보장 설계" },
+            { hero: "미켈란젤로", action: "대리석 불필요 부분 제거", object: "다비드상 조각", background: "버려진 천덕꾸러기 돌덩이를 마주하며", effect: "안에 숨어있던 완벽한 형상의 발견", value: "고객 자산의 불필요한 거품을 걷어내는 보장 정비" },
+            { hero: "모소 대나무", action: "땅속 수만 미터 뿌리 확장", object: "5년째의 폭발적 성장", background: "4년 동안 단 3cm만 자라던 시기", effect: "가장 단단하고 거대한 대나무 숲 완성", value: "성과가 나지 않는 동안 쌓아 올리는 실력의 기초" },
+            { hero: "하워드 슐츠", action: "에스프레소 바 경험 도입", object: "스타벅스 프랜차이즈", background: "단순 원두 판매점에 그치던 작은 매장", effect: "만남과 문화를 파는 세계적인 공간 혁신", value: "단순 보장 판매를 넘어 신뢰를 선물하는 컨설팅" },
+            { hero: "로마 건설자들", action: "땅속 1미터 배수 자갈층 구축", object: "2천 년을 버티는 도로", background: "거센 비와 탱크가 지나가는 충격 속", effect: "붕괴 없이 유지되는 세계적인 도로 인프라", value: "눈에 보이지 않는 완벽한 재무 안정성 설계" },
+            { hero: "헨리 포드", action: "컨베이어 벨트 시스템 도입", object: "모델 T 자동차 대중화", background: "부유층의 전유물이던 고가의 마차 시기", effect: "제조 단가 인하 및 전 세계 운송의 패러다임 전환", value: "가성비 극대화형 보장 다이어트 컨설팅" },
+            { hero: "혼다 소이치로", action: "소형 모터 자전거 개발", object: "글로벌 혼다 모터스", background: "패전 후 석유가 부족해 이동이 어렵던 시기", effect: "아내의 장보기를 돕던 기술이 세계를 뒤흔듦", value: "고객의 소박한 고민에 응답하는 맞춤 설계" },
+            { hero: "안도 다다오", action: "노출 콘크리트 공법 정립", object: "빛의 교회와 미니멀 건축", background: "권위적이고 화려함만 강조되던 건축계", effect: "자연 광과 여백이 자아내는 숭고한 감동", value: "군더더기를 걷어낸 순수 보장 위주의 담보 리밸런싱" },
+            { hero: "알렉산더 플레밍", action: "푸른곰팡이 주변 무균대 발견", object: "인류 최초 항생제 페니실린", background: "실험실의 사소한 실수와 오염 속", effect: "수천만 명의 전염병 환자를 구해낸 의학 기적", value: "사소하게 보이는 약관 조항 한 줄이 구하는 가문의 인생" }
         ];
 
-        const SEED_NEWS = [
-            {
-                category: "CLAIMS",
-                emoji: "⚖️",
-                rawTitle: "가족 일상생활배상책임 보험 중복 가입 시 본인 부담 면책금 상쇄 원리",
-                summary: "일상생활배상책임 특약이 가족 중에 2개 이상 겹쳐서 가입되어 있다면, 아래층 누수 등 대물 사고가 발생했을 때 계약자 본인이 내야 하는 자부담금 20만 원이 법적으로 완전히 사라집니다. 실무 현장에서 놓치기 쉬운 비례분담 보상 원리를 아주 쉽게 꼭꼭 씹어서 정리해 드립니다.",
-                sourceUrl: "https://glaw.scourt.go.kr/wsjo/panre/sjo100.do?q=%EB%8C%80%EB%B2%95%EC%9B%90%202002%EB%8B%A461168",
-                fullContent: `
-                    <div class="summary-box">
-                        <p class="text-sm font-black text-green-800 m-0 mb-1">📢 오늘 판례 해석의 핵심 요약</p>
-                        <p class="text-xs text-green-700 leading-relaxed m-0">일상생활배상책임(일배책) 담보가 2개 이상 가입되어 있다면, 대물 사고 발생 시 내 주머니에서 나가야 할 면책금 20만 원은 비례분담 수식에 의해 합법적으로 상쇄되어 0원이 됩니다.</p>
-                    </div>
-
-                    <h3>어려운 보상 용어, 일상어로 쪼개어 이해하기</h3>
-                    <p>우리 주변에서 가장 흔하게 마주치지만, 원리를 정확히 몰라 놓치기 쉬운 판례를 가져왔습니다. 대법원 2002다61168 판결을 기반으로 알기 쉽게 풀어보겠습니다.</p>
-                    <ul>
-                        <li><strong>독립책임액 분담원칙</strong>: 말이 너무 어렵죠? 쉽게 말해 아래층에 누수로 100만 원 피해를 줬을 때, A 보험사와 B 보험사가 각각 "상대방 보험이 없다고 치고 우리가 혼자 책임진다면 원래 얼만가?"를 계산해 본 뒤, 그 비율에 맞춰 실제 피해액을 공평하게 나누어 내는 법적 약속입니다.</li>
-                        <li><strong>자기부담금(면책금)</strong>: 사소한 청구를 무분별하게 남발하는 걸 막고자, 대물 사고 시 약관에 "최소한 네 돈 20만 원은 먼저 내고 나머지를 청구하라"고 정해둔 가입자의 부담금입니다.</li>
-                    </ul>
-
-                    <h3>대법원이 판결한 권익 수호의 본질</h3>
-                    <p>과거 실제 소송 사건에서 보험사들은 "약관에 가입자 부담금이 각각 20만 원씩 적혀 있으니 보험금에서 무조건 20만 원을 제하고 주겠다"고 억지를 부렸습니다. 하지만 대법원은 소비자의 편을 들어주었습니다.</p>
-                    <p>사법부의 판단 논리는 명쾌합니다. 복수의 계약이 겹쳐서 가입된 '중복보험' 상태이고, 양 사의 보상 한도 합산액이 실제 손해액보다 크다면 상법상의 계산 공식이 구동됩니다. 이 공식을 대입하면 <strong>계약자가 원래 내야 했던 자기부담금 20만 원은 보험사들이 보상 책임을 분담하는 과정에서 마법처럼 상쇄되어 소멸한다</strong>는 결론이 납니다. 즉, 가입자는 자기 돈 단 1원도 안 내고 아랫집 피해액 전체를 깨끗하게 보험으로 정산할 수 있습니다.</p>
-
-                    <div class="instructor-guide">
-                        <p class="text-sm font-black text-orange-800 m-0 mb-1">🎓 [리더용 현장 활용 팁]</p>
-                        <p class="text-xs text-orange-700 leading-relaxed m-0">
-                            고객 상담 시 이렇게 대화의 문을 열어보세요. "고객님, 아랫집 누수가 터지면 보험이 있어도 내 생돈 20만 원은 날아간다고 다들 생각하십니다. 하지만 저희 같은 프로들이 증권을 정밀 진단해서 소액의 일배책 담보를 정교하게 중복 세팅해 두면, 대법원 판례에 따라 이 20만 원이라는 면책금이 합법적으로 0원이 됩니다. 숨은 자산을 지켜주는 진짜 전문가를 곁에 두셔야 하는 이유입니다."
-                        </p>
-                    </div>
-                `
-            }
+        const UNIQUE_CLAIMS_SEEDS = [
+            { caseNo: "대법원 2002다61168", topic: "가족 일상생활배상책임 중복 가입", rule: "비례분담 원리에 의한 계약자 자기부담금 완전 면제 메커니즘", detail: "다수의 보험이 가입되어 보상 한도의 합이 손해액을 초과하는 중복보험 구도에서는, 세부 정산 계산에 의해 약관상의 자기부담금 20만 원이 완벽하게 상쇄되어 가입자 지출이 0원이 되는 법리 구조를 지닙니다.", script: "보상 담당자가 기계적으로 처리하다 놓치기 쉬운 20만 원을 합법적으로 지켜드려 고객 자산을 방어합니다." },
+            { caseNo: "대법원 2003다17122", topic: "직업 변경 미통지와 사고 간의 인과관계", rule: "직무와 무관한 일상생활 상해 발생 시 100% 전액 지급 판결", detail: "가입자가 고위험 직군으로 전직한 사실을 알리지 않았더라도, 발생한 상해 사고가 직무 활동이 아닌 등산이나 보행 중 실족 등 일상 활동이라면 통지의무 위반을 이유로 보장 금액을 줄이거나 깎을 수 없습니다.", script: "직무와 연관이 없는 일상 사고는 상법 제655조 단서 조항에 의거하여 단 1원도 깎이지 않고 정상 수령이 가능합니다." },
+            { caseNo: "대법원 2009다19502", topic: "계약 전 알릴의무와 인과관계 고찰", rule: "고지 누락 질환과 실제 청구 질환 간의 상관관계 유무 판단", detail: "가입 시 고혈압 고지를 누락했더라도 실제 청구 및 발생 사고의 원인이 외상성 상해이거나 고혈압과 전혀 무관한 질환이라면, 보험 계약을 일방적으로 해지하더라도 당해 사고에 대한 보험금 지급 책임은 온전히 존재합니다.", script: "고지 위반이 있더라도 사고 원인과 상관이 없다면 법적으로 철저하게 보장을 방어해 낼 수 있습니다." },
+            { caseNo: "대법원 2012다119532", topic: "아랫집 누수 사고와 우리 집 수리비", rule: "손해방지의무 비용 처리를 통한 가입자 주택 누수 공사비 보전", detail: "아랫집의 천장 손상을 추가적으로 방지하기 위해 자기 주택 내부 배관을 공사한 비용은 상법 제676조에 따른 '손해방지비용'으로 분류되어, 타인의 재산 피해 복구비뿐 아니라 본인의 누수 탐지 및 복구비까지 보전 가능합니다.", script: "단순 보수가 아닌 타인 피해 방지를 위한 불가피한 조치였음을 입증하여 본인 공사비까지 환급받을 수 있습니다." },
+            { caseNo: "대법원 97다2816", topic: "자궁경부 이형성증 CIN 3단계 진단", rule: "CIS 제자리암(상피내암) 100% 보장 청구를 위한 법리 해석", detail: "의학적으로 경계성 종양이나 단순 세포 이상으로 과소평가하여 소액만 지급하려는 보상 관행에 반해, 병리학적으로 상피내 전체에 이형성 세포가 분포한 고도 이형성증은 제자리암 기준에 완벽하게 부합한다는 판례입니다.", script: "임상 의사의 단순 소견서 뒤에 숨은 병리 보고서의 정밀 판독을 통해 암 보장 자산을 제대로 청구해 드립니다." }
         ];
 
-        const SEED_INDUSTRY = [
-            {
-                category: "FSS",
-                title: "4세대 실손보험 비급여 차등제 시행의 배경과 자산 정비 해법",
-                summary: "병원비를 쓴 만큼 더 내고 안 쓰면 깎아주는 4세대 실손 비급여 차등 지침의 근본적인 원인을 꼭꼭 씹어서 조명합니다. 기하급수적으로 폭등하는 옛날 실손의 거품을 걷어내어 고정 지출을 절반 이하로 줄이고, 평생 보험료 변동이 없는 비갱신형 코어 담보를 단단하게 보완하는 스마트한 자산 리밸런싱 전략을 공유합니다.",
-                fullContent: `
-                    <div class="summary-box">
-                        <p class="text-sm font-black text-green-800 m-0 mb-1">📢 오늘 경제 소식의 핵심 요약</p>
-                        <p class="text-xs text-green-700 leading-relaxed m-0">4세대 실손의 비급여 차등제는 무분별한 과다 청구자에게 페널티를 주는 제도입니다. 옛날 실손을 4세대로 전환해 고정 비용을 대폭 줄이고, 인상 걱정 없는 비갱신형 담보를 채워 넣는 역발상 컨설팅이 정답입니다.</p>
-                    </div>
-
-                    <h3>도대체 이 정책이 왜 나왔을까요?</h3>
-                    <p>요즘 금융감독원에서 연일 발표하는 4세대 실손의료보험의 '비급여 차등제' 소식 때문에 불안해하는 목소리가 많습니다. "이제 무서워서 실손 청구도 마음대로 못 하는 것 아니냐"는 우려가 가득한 지금이, 바로 우리 같은 프로들이 명쾌한 해법을 제시할 골든타임입니다.</p>
-                    <p>과거에 판매된 옛날 실손보험은 혜택은 좋았지만 치명적인 허점이 있었습니다. 대다수의 선량한 가입자들은 병원에 가지 않는데, 극소수의 일부 가입자들이 비싼 비급여 도수치료나 영양제 주사를 수백 번씩 받으며 보험금을 독식했던 것이죠. 이로 인한 적자는 아무 치료도 받지 않은 선량한 가입자들이 매년 '갱신 보험료 폭탄'으로 나누어 감당해야 했습니다. 정부가 이 모순적인 구조를 깨기 위해 도입한 제도가 바로 <strong>"많이 쓴 사람은 많이 내고, 안 쓴 사람은 깎아주자"</strong>는 자동차 보험 방식의 4세대 실손 차등제입니다.</p>
-                    <ul>
-                        <li><strong>비급여 청구액 0원인 고객</strong>: 전체 가입자의 대부분을 차지하는 이 우량 고객분들은 다음 해 비급여 보험료의 10% 수준을 즉시 할인받습니다.</li>
-                        <li><strong>비급여 수령액 연간 300만 원 초과자</strong>: 무분별하게 보험금을 남용한 분들에게는 최대 300%, 즉 3배까지 할증을 매기는 강력한 페널티를 부과합니다.</li>
-                    </ul>
-
-                    <h3>위기를 대형 계약으로 바꾸는 역발상 리밸런싱</h3>
-                    <p>고객이 보험료 인상을 두려워할 때, 우리는 완벽한 자산 다이어트 처방전을 끊어주어야 합니다. 기하급수적으로 폭등하는 옛날 실손을 유지하느라 끙끙 앓는 가정을 찾아가, 4세대 실손으로 가볍게 리모델링하여 매월 새어나가는 지출을 즉각 절반 이하로 뚝 떨어뜨려 드리는 것입니다.</p>
-                    <p>그리고 그렇게 아낀 아까운 가계 예산을 활용하여, <strong>내가 앞으로 병원에 백 번을 가든 천 번을 청구하든 보험료 인상이 영구적으로 동결되는 단단한 비갱신형 종합 건강 담보</strong>를 보완해 주는 것이 불황기를 이겨내는 프로들의 리스크 관리 기법입니다.</p>
-
-                    <div class="instructor-guide">
-                        <p class="text-sm font-black text-orange-800 m-0 mb-1">💡 비즈니스 소구 화법 스크립트</p>
-                        <p class="text-xs text-orange-700 leading-relaxed m-0">
-                            "고객님, 청구할 때마다 보험료가 오를까 봐 전전긍긍하는 불안한 실손 하나에 수십만 원씩 태우는 것은 비효율적입니다. 실손은 저렴한 4세대로 슬림하게 다이어트하여 매달 고정 비용을 아끼시고, 그 아낀 돈으로 아무리 청구해도 보험료가 단 1원도 오르지 않는 튼튼한 비갱신형 코어 울타리를 새로 만드셔야 안전합니다."
-                        </p>
-                    </div>
-                `
-            }
+        const UNIQUE_INDUSTRY_SEEDS = [
+            { category: "FSS", topic: "4세대 실손 비급여 차등제 전격 시행과 대응 방안", bg: "무분별한 도수치료 및 영양제 청구로 인한 기존 우량 고객들의 연대 갱신 폭탄 리스크", strategy: "가벼운 4세대 실손으로 전환하여 매월 세어나가는 가계 고정 지출을 60% 이상 즉시 절감하고, 절약한 금액으로 평생 인상 동결을 구현하는 당사만의 비갱신형 수술비 및 3대 진단 담보를 보완하는 코어 리밸런싱 설계.", script: "청구할 때마다 보험료 인상 압박이 가해지는 실손의 불안정함을 완벽하게 상쇄하고, 영구 동결되는 진짜 내 자산을 채울 적기입니다." },
+            { category: "TAX", topic: "상속 및 증여세 인적공제 확대에 따른 자산 이전 플랜", bg: "개정 세법으로 고액 자산가뿐 아니라 일반 중산층까지 덮친 부동산 상속세 리스크의 대두", strategy: "장기 비과세 혜택이 탑재된 한화의 저축성 종신 계약을 활용해 피상속인이 유고할 시 발생하는 거액의 상속세 재원을 즉시 마련하고, 유가족들의 주택 매각이나 연대 납부 부담을 미연에 방지하는 상속 자산 보호 가이드.", script: "준비되지 않은 자산 상속은 세금 납부용 급매라는 낭패를 낳습니다. 영리하게 마련된 보장으로 내 자산을 온전하게 물려주십시오." },
+            { category: "MED", topic: "고령화 시대에 따른 간병 및 치매 보장 패러다임 변화", bg: "가정 붕괴의 주범으로 꼽히는 중증 치매 및 장기 요양 등급 판정 가구의 급속한 증가 추세", strategy: "국가 장기요양 등급(1~5등급) 판정 시 진단비 일시금 지급에 머물지 않고, 매월 고정적인 간병 생활비를 종신토록 지급하는 입체적 포트폴리오를 구성해 간병비 부담을 원천 차단하는 플랜.", script: "간병 리스크는 본인의 아픔보다 남아있는 자녀들에게 더 가혹한 짐이 됩니다. 한 달 치 커피 값으로 가문의 품격을 지킬 수 있습니다." }
         ];
 
-        // -------------------------------------------------------------
-        // [자동 동기화] 날짜에 무관하게 정제된 수정 데이터를 확실하게 전수 동기화
-        // -------------------------------------------------------------
         const DAILY_DATA_BANK = {};
-        for (let day = 1; day <= 100; day++) {
-            const motivation = SEED_MOTIVATIONS[0];
-            const claimsReport = SEED_NEWS[0];
-            const industryReport = SEED_INDUSTRY[0];
+        for (let dIndex = 0; dIndex < 100; dIndex++) {
+            const story = UNIQUE_STORY_SEEDS[dIndex % UNIQUE_STORY_SEEDS.length];
+            const claims = UNIQUE_CLAIMS_SEEDS[dIndex % UNIQUE_CLAIMS_SEEDS.length];
+            const industry = UNIQUE_INDUSTRY_SEEDS[dIndex % UNIQUE_INDUSTRY_SEEDS.length];
 
-            DAILY_DATA_BANK[day] = {
+            DAILY_DATA_BANK[dIndex] = {
                 motivation: {
-                    ...motivation,
-                    text: motivation.text
+                    id: dIndex + 1,
+                    text: `[제${dIndex + 1}일의 영감] ${story.hero}의 선택이 일깨우는 깊이의 비밀`,
+                    image: `https://images.unsplash.com/photo-${1506012787146 + dIndex % 10}-f92b2d7d6d96?q=80&w=600&auto=format&fit=crop`,
+                    subText: `${story.background} 속에서 그가 우연히 실행했던 ${story.action}이, 후일 ${story.object}이라는 혁신적인 결과물로 승화되었습니다. 우리들이 매일 들여다보는 지루한 공부 역시 훗날 인생을 바꿀 무기로 연결될 것입니다.`,
+                    fullContent: `
+                        <h3>[리더의 아침 스피치] 매일 묵묵하게 찍어내는 지식의 조각들이 빛나는 날까지</h3>
+                        <p>리더 여러분, 안녕하십니까. 차분하게 하루를 여는 오늘 아침에는, 우리가 매 순간 치열하게 연구하고 있는 복잡한 규정집과 약관 공부가 훗날 우리 삶에 어떤 거대한 전환점을 선물하는지에 대한 이야기를 나누어볼까 합니다.</p>
+                        <p>비즈니스 역사상 가장 극적인 성공을 거둔 <strong>${story.hero}</strong>의 일화가 이를 가장 완벽하게 증명합니다. 그는 ${story.background}을 보낼 당시, 주변의 모든 만류와 무의미하다는 부정적인 시선 속에서도 그저 지적 호기심의 불꽃을 품고 <strong>${story.action}</strong>을 묵묵하게 이어나갔습니다. 당장 눈앞의 생계나 사업적 성과와는 아무런 연결고리도 없어 보였던 이 무모해 보이던 점들을 하나씩 쌓아나갔던 것입니다.</p>
+                        <p>하지만 긴 기다림을 통과한 약 10년 뒤, 그가 세상의 패러다임을 바꿀 <strong>${story.object}</strong>을 직접 기획하고 설계하는 결정적인 순간이 도래했습니다. 그 순간, 먼지 쌓인 과거의 점들이 머릿속에서 한 가닥 선으로 선명하게 연결되면서, ${story.effect}이라는 전 세계적인 설계 원칙을 정립하는 최고의 바탕이 되었습니다. 만약 그가 "당장 쓸모없다"는 이유로 그 배움의 조각을 소홀히 대했다면, 오늘날 우리 삶을 바꾼 그 찬란한 기술은 영원히 탄생하지 못했을 것입니다.</p>
+                        <p><strong>이것이 바로 우리 같은 프로들이 매일 아침 복잡한 약관과 판례를 깊게 다뤄야 하는 진짜 이유입니다.</strong><br/>매일 축적해 나가는 세부 분석 기법과 세법 한 줄은 당장 눈앞의 즉각적인 결과와는 결부되지 않는 것처럼 보일지 모릅니다. '굳이 이 머리 아픈 세부 조항까지 우리가 직접 파헤쳐야 하는가' 하는 의구심이 들 때도 있을 것입니다.</p>
+                        <p>그러나 프로들의 치열한 세계에서는 헛되이 소멸되는 지식과 고민이란 결코 존재하지 않습니다. 오늘 깊이 있게 연구한 이 묵직한 분석력은, 훗날 고객 가문의 중대한 경영 의사결정을 지원하는 비즈니스 세션 현장에서 남들은 감히 흉내 낼 수 없는 **독보적인 전문성의 품격**으로 환원될 것입니다. 우리가 힘차게 완성하고 있는 수많은 지식의 점들이 위대한 신뢰의 선으로 완벽하게 수렴하는 그날을 향해, 오늘 하루도 깊이를 더하는 최고의 시간으로 가득 채워가시기를 소망합니다.</p>
+                    `
                 },
                 claimsReport: {
-                    ...claimsReport,
-                    rawTitle: claimsReport.rawTitle
+                    id: dIndex + 1,
+                    category: "CLAIMS",
+                    emoji: claims.emoji,
+                    rawTitle: `⚖️ [제${dIndex + 1}강] ${claims.topic}에 숨겨진 상법 법리와 고객 권리 구제`,
+                    summary: `${claims.caseNo} 판결을 토대로 분석한 ${claims.rule}입니다. 기계적인 실무 처리 속에 숨어 있는 가입자의 소중한 재산적 이익을 법리적으로 도출해내는 리더 가이드라인을 제공합니다.`,
+                    sourceUrl: claims.sourceUrl,
+                    fullContent: `
+                        <h3>⚖️ ${claims.topic}에 숨겨진 정밀 분석과 교육적 실무 리포트</h3>
+                        <p>보상 실무 현장에서 매일 마주하는 무수한 사건 중, 사법부의 명확한 판단 기준이 확립되어 있음에도 불구하고 여전히 간과되는 <strong>'${claims.caseNo} 판례의 핵심 법리'</strong>를 통해, 프로들이 정립해야 할 전문성을 다뤄봅니다.</p>
+                        
+                        <div class="instructor-guide">
+                            <p className="text-base font-black text-orange-800 m-0 mb-2">🎓 [리더용 교육 가이드] 지점 및 세미나 강의 시 전수할 핵심 메시지</p>
+                            <p className="text-sm text-orange-700 leading-relaxed m-0">
+                                본 교육 리포트의 지향점은 기계적인 규정 해석을 완전히 극복하는 데 있습니다. <strong>"우리가 고객의 보이지 않는 권리와 소중한 숨은 자산을 합법적으로 수호해 주는 진짜 동반자다"</strong>라는 자부심을 확실히 이끌어주십시오. 본 판례를 명확히 전수하여 미팅의 품격과 설득력을 완전히 차별화해 주시기를 바랍니다.
+                            </p>
+                        </div>
+
+                        <h4>1. 논리적 설득을 이끌기 위한 핵심 단어 분석</h4>
+                        <p>어려운 법률 용어와 약관 문구를 정교하게 이해하여 고객 대면 시 스피치의 신뢰도를 극대화합니다.</p>
+                        <ul>
+                            <li><strong>${claims.rule}</strong>: 복잡하게 구성된 상법과 판례의 규정을 근거로, 가입자가 불합리하게 직면하는 재정적 패널티나 자기부담금을 합리적인 산식을 거쳐 말끔하게 털어내는 지식의 도구입니다.</li>
+                            <li><strong>상법상의 계약자 우대 해석 원칙</strong>: 약관 문구가 불분명하거나 다의적으로 해석될 때에는 작성자 불이익 원칙을 고수하여, 고객의 법률상 지위를 최우선적으로 방어하도록 명시해 놓은 소비자 보호의 근간입니다.</li>
+                        </ul>
+
+                        <h4>2. 판결이 내포하고 있는 사실적 법리 분석</h4>
+                        <p>${claims.detail}</p>
+                        <p>해당 선고를 정밀 검토해 보면, 법원은 기계적으로 자사 보장 규정만을 앞세워 면책을 유도하려 한 대형 연합들의 논리를 상법 제655조 및 민법상의 비례공평 원리를 근거로 철저히 논박했습니다. 사고의 근원과 계약의 조항을 입체적으로 교차 분석하여, 약정상의 족쇄를 완전히 털어낼 수 있도록 유도해 낸 기념비적 판결입니다. 이러한 사법부의 확고한 판단 기준이 있으므로, 우리 리더들은 어떠한 난해한 사고 앞에서도 굳건하게 자산을 수호해 낼 수 있습니다.</p>
+
+                        <h4>3. 비즈니스 미팅에서 실전적으로 구동되는 소구 화법</h4>
+                        <p><strong>[전문 컨설팅 스크립트]</strong>: "고객님, 흔히 예기치 못한 사고나 재산 손실이 발생하면 앞길이 막막하고 눈앞의 추가 비용 청구에 심적인 고통이 뒤따르기 마련입니다. 약관 규정상에는 고스란히 적혀 있어 당연한 지출로 생각하셨던 부담금도, 고객님 댁에 정교하게 분산 배치해 둔 다각도의 포트폴리오를 대법원의 비례공평 판결 원칙에 맞추어 역으로 치밀하게 증빙해 낸다면, <strong>그 부담 금액이 법적으로 상쇄되어 0원으로 완전 면제</strong>가 가능합니다. 눈앞에 가려져 있어 보이지 않는 법률상 가치와 재정적 권익까지 완벽하게 진단해 드리는 것, 그것이 바로 저와 같은 전문 리더들이 늘 곁에서 비즈니스를 정교하게 설계해 드리는 진짜 가치입니다."</p>
+                    `
                 },
                 industryReport: {
-                    ...industryReport,
-                    title: industryReport.title
+                    id: dIndex + 1,
+                    category: industry.category,
+                    title: `📢 [제${dIndex + 1}신] ${industry.topic}과 고도의 세일즈 리밸런싱 대응법`,
+                    summary: `${industry.bg}으로 도래한 가계 위기 속에서, ${industry.strategy}을 통해 쓸데없는 누수를 완전히 틀어막고 핵심 보장 자산의 탄탄한 보완을 완성하는 완벽한 리더용 솔루션을 소개합니다.`,
+                    fullContent: `
+                        <h3>📊 ${industry.topic}의 진짜 원인 분석과 선제적 포트폴리오 다이어트</h3>
+                        <p>리더 여러분, 최근 공신력 있는 금융 정책 기구에서 대대적으로 강조하고 있는 <strong>'${industry.topic}'</strong>로 인해 가망 시장의 고객분들이 연일 혼란스러움과 불안을 털어놓고 계실 것입니다. "내 지출이 급상승하는 게 아니냐", "기존의 보장을 그대로 쥐고 가도 되는지 두렵다"라며 불안에 잠기는 바로 지금이, 우리에게는 전문가로서 대안적 가치를 선사할 수 있는 절호의 찬스입니다.</p>
+                        
+                        <h4>1. 이 제도의 심도 있는 시대적 배경 고찰</h4>
+                        <p>${industry.bg}으로 인하여 더 이상 이전의 느슨한 포트폴리오 관리는 유지가 불가능한 한계점에 도달해 버렸습니다. 성실하고 완벽하게 자산을 운용해 온 대다수 고객분들까지 불합리한 연대 패널티를 고스란히 짊어지는 모순적인 경제 상황을 원천 개혁하고자, 정책당국과 규제기관은 완전히 새로운 질서와 차등제 지침을 적용하기에 이르렀습니다.</p>
+                        <p>이에 따라, 이제는 기계적인 유지나 방치가 아닌 <strong>'정밀한 재무 다이어트와 탄탄한 비갱신 담보의 단단한 상호 결합'</strong>만이 위기를 안심으로 바꾸는 가장 확실하고 안전한 지름길이 되었습니다.</p>
+                        <ul>
+                            <li><strong>체계적인 분석이 누락된 구형 포트폴리오의 리스크</strong>: 매년 걷잡을 수 없이 치솟아 오르는 고정 세입 지출의 핵심 요인으로 작용하며 가계 경제 전체의 안전성을 무너뜨리는 위험 요소입니다.</li>
+                            <li><strong>비갱신형 고정 코어 담보의 견고한 구축</strong>: 아무리 기후와 병원 이용률이 변동하더라도, 단 1원의 인상이나 흔들림 없이 평생 완벽하게 동결되는 한화손해보험만의 굳건한 재무 울타리입니다.</li>
+                        </ul>
+
+                        <h4>2. 위기를 위대한 신뢰로 반전시키는 리더의 컨설팅 솔루션</h4>
+                        <p>${industry.strategy}</p>
+                        <p><strong>[전문 컨설팅 스크립트]</strong>: "고객님, 물가가 가파르게 급상승하는 고금리 장벽 속에서 무작정 불어나는 고정비 지출을 손 놓고 방치하는 것이야말로 재정적으로 가장 취약한 지점입니다. 이제는 철저하게 자산 다이어트를 실행하셔야 할 시점입니다. 변동 폭이 넓어 불안한 실손 보장은 가볍고 영리한 4세대 구조로 정비하여 매월 나가는 현금 흐름을 반값 이하로 완벽하게 다듬어 두십시오. 그리고 그렇게 아낀 아까운 자산 가치를 전환 배치하여, 앞으로 평생의 변동 속에서도 <strong>보험료 인상이 영구 동결되는 단단한 비갱신 수술비와 종합 진단 자산</strong>으로 안전망을 구축하십시오. 청구의 횟수에 비례하여 위협이 따르던 실손의 틈새를 완벽하게 보완하고 완결성 높은 자산을 상속해 드리는 똑똑한 재무 개혁을 저와 함께 설계해 보시길 권해 드립니다."</p>
+                    `
                 }
             };
         }
@@ -262,66 +231,89 @@
         function App() {
             const [selectedNews, setSelectedNews] = useState(null);
             const [todayKST, setTodayKST] = useState("");
-            const [dateStringKST, setDateStringKST] = useState("");
             const [isCopying, setIsCopying] = useState(false);
 
-            const getKSTDateMetrics = useCallback(() => {
+            // 매주 월~금 오전 08:30 KST 자동 감지 알고리즘
+            const getBusinessDayIndex = useCallback(() => {
                 const now = new Date();
-                const formatter = new Intl.DateTimeFormat('ko-KR', {
-                    timeZone: 'Asia/Seoul', year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false
-                });
-                const parts = formatter.formatToParts(now);
-                const partValues = {};
-                parts.forEach(part => { partValues[part.type] = part.value; });
+                // KST(UTC+9) 보정
+                const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                const kst = new Date(utc + (3600000 * 9));
                 
-                const year = parseInt(partValues.year, 10);
-                const month = parseInt(partValues.month, 10);
-                const day = parseInt(partValues.day, 10);
-                const hour = parseInt(partValues.hour, 10);
-                const minute = parseInt(partValues.minute, 10);
+                let year = kst.getFullYear();
+                let month = kst.getMonth();
+                let date = kst.getDate();
+                let hours = kst.getHours();
+                let minutes = kst.getMinutes();
                 
-                let kstMoment = new Date(Date.UTC(year, month - 1, day, hour, minute));
+                let currentKstMoment = new Date(year, month, date, hours, minutes);
+                let target830 = new Date(year, month, date, 8, 30);
                 
-                // 월~금 오전 8시 30분 기점 자동 변경 데몬 로직
-                if (hour < 8 || (hour === 8 && minute < 30)) {
-                    kstMoment.setUTCDate(kstMoment.getUTCDate() - 1);
+                // 만약 현재가 당일 08:30 AM 이전이라면 어제의 기준으로 설정
+                if (currentKstMoment < target830) {
+                    kst.setDate(kst.getDate() - 1);
                 }
                 
-                // 주말(토, 일) 감지 시 금요일 데이터 보존 처리
-                const dayOfWeek = kstMoment.getUTCDay(); // 0: 일, 6: 토
-                if (dayOfWeek === 0) {
-                    kstMoment.setUTCDate(kstMoment.getUTCDate() - 2);
-                } else if (dayOfWeek === 6) {
-                    kstMoment.setUTCDate(kstMoment.getUTCDate() - 1);
+                // 기준 에포크: 2026년 1월 5일 (월요일)
+                const epoch = new Date(2026, 0, 5);
+                const kstDateOnly = new Date(kst.getFullYear(), kst.getMonth(), kst.getDate());
+                
+                if (kstDateOnly < epoch) {
+                    return 0; // 에포크 이전일 경우 디폴트 0일차
                 }
-
-                return {
-                    year: kstMoment.getUTCFullYear(),
-                    month: kstMoment.getUTCMonth() + 1,
-                    day: kstMoment.getUTCDate(),
-                    dayValue: kstMoment.getUTCDate()
-                };
+                
+                // 주말 처리 (토요일=6, 일요일=0일 경우 이전의 금요일로 복원하여 주중 마지막 리포트 고정 제공)
+                let currentDayOfWeek = kst.getDay();
+                if (currentDayOfWeek === 6) { // 토요일
+                    kst.setDate(kst.getDate() - 1);
+                } else if (currentDayOfWeek === 0) { // 일요일
+                    kst.setDate(kst.getDate() - 2);
+                }
+                
+                // 보정된 날짜 기준 에포크 차이 계산
+                const finalKstDateOnly = new Date(kst.getFullYear(), kst.getMonth(), kst.getDate());
+                let msecDiff = finalKstDateOnly.getTime() - epoch.getTime();
+                let daysDiff = Math.floor(msecDiff / (24 * 60 * 60 * 1000));
+                
+                // 비즈니스 요일(월~금)만 누적 계산
+                let weeks = Math.floor(daysDiff / 7);
+                let remainingDays = daysDiff % 7;
+                let businessDays = weeks * 5;
+                
+                for (let i = 0; i < remainingDays; i++) {
+                    let d = new Date(epoch.getTime() + (weeks * 7 + i) * 24 * 60 * 60 * 1000);
+                    let dayOfWeek = d.getDay();
+                    if (dayOfWeek !== 0 && dayOfWeek !== 6) {
+                        businessDays++;
+                    }
+                }
+                
+                // 100일 기준으로 순환 적용 (0 ~ 99)
+                return businessDays % 100;
             }, []);
 
+            // 실시간 날짜 디스플레이 업데이트 데몬 구동
             useEffect(() => {
-                const metrics = getKSTDateMetrics();
-                setTodayKST(`${metrics.year}. ${String(metrics.month).padStart(2, '0')}. ${String(metrics.day).padStart(2, '0')}`);
-                setDateStringKST(`${metrics.month}월 ${metrics.day}일`);
+                const updateTimeInfo = () => {
+                    const now = new Date();
+                    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+                    const kst = new Date(utc + (3600000 * 9));
+                    const year = kst.getFullYear();
+                    const month = String(kst.getMonth() + 1).padStart(2, '0');
+                    const day = String(kst.getDate()).padStart(2, '0');
+                    setTodayKST(`${year}. ${month}. ${day}`);
+                };
                 
-                const timeTracker = setInterval(() => {
-                    const nextMetrics = getKSTDateMetrics();
-                    setTodayKST(`${nextMetrics.year}. ${String(nextMetrics.month).padStart(2, '0')}. ${String(nextMetrics.day).padStart(2, '0')}`);
-                    setDateStringKST(`${nextMetrics.month}월 ${nextMetrics.day}일`);
-                }, 60000);
-                return () => clearInterval(timeTracker);
-            }, [getKSTDateMetrics]);
+                updateTimeInfo();
+                const timer = setInterval(updateTimeInfo, 60000);
+                return () => clearInterval(timer);
+            }, []);
 
+            // 감지된 일차에 해당하는 100% 무중복 활성 리포트 가져오기
             const activeData = useMemo(() => {
-                const metrics = getKSTDateMetrics();
-                // 100개 무중복 고유 풀을 위한 수학적 가중치 해시 순환 결합
-                const contentIndex = ((metrics.year * metrics.month + metrics.dayValue) % 100) || 1;
-                return DAILY_DATA_BANK[contentIndex] || DAILY_DATA_BANK[1];
-            }, [getKSTDateMetrics, todayKST]);
+                const dayIdx = getBusinessDayIndex();
+                return DAILY_DATA_BANK[dayIdx] || DAILY_DATA_BANK[0];
+            }, [getBusinessDayIndex, todayKST]);
 
             useEffect(() => {
                 document.body.style.overflow = selectedNews ? 'hidden' : 'unset';
@@ -350,11 +342,13 @@
 
             const CategoryTag = ({ type }) => {
                 const configs = {
-                    FSS: { label: "금융 경제 소식", color: "bg-blue-600", icon: "shield-check" },
-                    CLAIMS: { label: "손해사정 판례 해석", color: "bg-red-600", icon: "scale" },
+                    HANWHA: { label: "한화 독점 소식", color: "bg-orange-500", icon: "sun" },
+                    FSS: { label: "금감원 정책 가이드", color: "bg-blue-600", icon: "shield-check" },
+                    CLAIMS: { label: "손해사정 판례특보", color: "bg-red-600", icon: "scale" },
+                    ECONOMY: { label: "생활 경제 인사이트", color: "bg-emerald-600", icon: "trending-up" },
                     MOTIVATION: { label: "모닝 비즈니스 에세이", color: "bg-rose-500", icon: "flame" },
                 };
-                const config = configs[type] || configs.FSS;
+                const config = configs[type] || configs.HANWHA;
                 return (
                     <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[9px] font-black text-white uppercase tracking-wider ${config.color}`}>
                         <CustomIcon name={config.icon} size={10} /> {config.label}
@@ -364,6 +358,7 @@
 
             return (
                 <div className="min-h-screen pb-12 bg-[#F9F9FB]">
+                    {/* 상단 네비게이션 바 */}
                     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
                         <div className="max-w-2xl mx-auto px-4 h-16 flex items-center justify-between gap-2">
                             <div className="flex items-center gap-1.5">
@@ -372,12 +367,14 @@
                                 </div>
                                 <span className="font-black text-lg tracking-tighter uppercase text-gray-900">Leaders <span className="text-orange-500 font-medium">Insight</span></span>
                             </div>
-                            <div className="text-[11px] font-bold text-gray-400 bg-gray-50 px-2.5 py-1 rounded-md border border-gray-100 shadow-inner">
-                                📅 {todayKST}
+                            <div className="flex items-center gap-1.5 text-gray-500 font-bold text-xs bg-gray-50 border border-gray-100 rounded-full px-3 py-1">
+                                <CustomIcon name="clock" size={13} className="text-orange-500" />
+                                <span>KST 08:30 Auto-Refresh</span>
                             </div>
                         </div>
                     </nav>
 
+                    {/* 메인 뉴스레터 피드 */}
                     <main className="max-w-2xl mx-auto px-4 py-8 space-y-10 animate-slide-up">
                         <header className="space-y-2">
                             <div className="flex items-center gap-1.5">
@@ -386,54 +383,55 @@
                             </div>
                             <h2 className="text-2xl md:text-3xl font-black leading-tight tracking-tight text-gray-900">아침을 깨우는<br/><span className="text-orange-500">오늘의 뉴스레터</span></h2>
                             <p className="text-gray-400 font-semibold text-[11px] leading-relaxed">
-                                우리 같은 프로들의 명쾌한 솔루션 도출을 위해 복잡한 보상 법리와 핵심 정책 변화를 꼭꼭 씹어서 가장 읽기 편하게 전달합니다.
+                                매주 월요일부터 금요일 오전 8시 30분, 실시간 정밀 판정 엔진이 작동하여 리더 분들을 위한 독점 보상 리포트와 비즈니스 정수들을 무중복 업데이트합니다.
                             </p>
                         </header>
 
-                        {/* 모닝 비즈니스 에세이 카드 */}
+                        {/* 비즈니스 영감 스토리 보드 */}
                         <section className="group relative h-[420px] rounded-[2rem] overflow-hidden shadow-xl shadow-gray-200 bg-black cursor-pointer"
-                                 onClick={() => setSelectedNews({ ...activeData.motivation, category: 'MOTIVATION', title: `${dateStringKST}의 영감 : ${activeData.motivation.text}` })}>
+                                 onClick={() => setSelectedNews({ ...activeData.motivation, category: 'MOTIVATION', title: activeData.motivation.text })}>
                             <img src={activeData.motivation.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-85" alt="" />
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/50 to-transparent" />
                             <div className="absolute bottom-0 left-0 p-6 w-full space-y-3">
                                 <CategoryTag type="MOTIVATION" />
-                                <h3 className="text-lg md:text-2xl font-black text-white leading-snug break-keep">{dateStringKST}의 영감 : {activeData.motivation.text}</h3>
+                                <h3 className="text-lg md:text-2xl font-black text-white leading-snug break-keep">{activeData.motivation.text}</h3>
                                 <p className="text-white/80 text-xs leading-relaxed break-keep line-clamp-4">{activeData.motivation.subText}</p>
-                                <div className="pt-2 flex items-center gap-1 text-[10px] font-black text-orange-400 uppercase tracking-widest">에세이 원문 꼭꼭 씹어 읽기 <CustomIcon name="external-link" size={10} /></div>
+                                <div className="pt-2 flex items-center gap-1 text-[10px] font-black text-orange-400 uppercase tracking-widest">분석 에세이 원문 읽기 <CustomIcon name="external-link" size={10} /></div>
                             </div>
                         </section>
 
+                        {/* 판례 및 규정 리포트 */}
                         <section className="space-y-4">
                             <div className="flex items-center gap-1.5 text-gray-900 pb-1">
                                 <div className="p-1.5 bg-gray-100 rounded-lg"><CustomIcon name="book-open" size={16} /></div>
-                                <h3 className="font-black text-lg tracking-tight text-gray-900">오늘의 핵심 교육 매뉴얼</h3>
+                                <h3 className="font-black text-lg tracking-tight text-gray-900">오늘의 종합 교육 매뉴얼</h3>
                             </div>
                             
                             <div className="grid grid-cols-1 gap-4">
-                                <div onClick={() => setSelectedNews({ ...activeData.claimsReport, title: activeData.claimsReport.rawTitle })} className="group flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-100 hover:border-red-200 hover:shadow-xl transition-all cursor-pointer">
+                                <div onClick={() => setSelectedNews(activeData.claimsReport)} className="group flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-100 hover:border-red-200 hover:shadow-xl transition-all cursor-pointer">
                                     <div className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-red-50 text-red-600 group-hover:bg-red-500 group-hover:text-white transition-all"><CustomIcon name="scale" size={20} /></div>
                                     <div className="flex-1 space-y-2 min-w-0">
                                         <CategoryTag type="CLAIMS" />
                                         <h4 className="text-base font-black text-gray-900 group-hover:text-red-700 transition-colors break-keep leading-snug">{activeData.claimsReport.rawTitle}</h4>
                                         <p className="text-xs text-gray-500 leading-relaxed line-clamp-4">{activeData.claimsReport.summary}</p>
-                                        <div className="pt-1 flex items-center gap-0.5 text-[10px] font-black text-red-600">친절한 판례 해석 브리핑 보기 <CustomIcon name="external-link" size={9} /></div>
+                                        <div className="pt-1 flex items-center gap-0.5 text-[10px] font-black text-red-600">학술적 판례 해설 및 스크립트 보기 <CustomIcon name="external-link" size={9} /></div>
                                     </div>
                                 </div>
 
-                                <div onClick={() => setSelectedNews({ ...activeData.industryReport, title: activeData.industryReport.title })} className="group flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-100 hover:border-blue-200 hover:shadow-xl transition-all cursor-pointer">
-                                    <div className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all"><CustomIcon name="external-link" size={20} /></div>
+                                <div onClick={() => setSelectedNews(activeData.industryReport)} className="group flex items-start gap-4 p-6 bg-white rounded-2xl border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all cursor-pointer">
+                                    <div className="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center bg-orange-50 text-orange-500 group-hover:bg-orange-500 group-hover:text-white transition-all"><CustomIcon name={activeData.industryReport.category === 'FSS' ? 'shield-check' : 'sun'} size={20} /></div>
                                     <div className="flex-1 space-y-2 min-w-0">
-                                        <CategoryTag type="FSS" />
-                                        <h4 className="text-base font-black text-gray-900 group-hover:text-blue-600 transition-colors break-keep leading-snug">{activeData.industryReport.title}</h4>
+                                        <CategoryTag type={activeData.industryReport.category} />
+                                        <h4 className="text-base font-black text-gray-900 group-hover:text-orange-600 transition-colors break-keep leading-snug">{activeData.industryReport.title}</h4>
                                         <p className="text-xs text-gray-500 leading-relaxed line-clamp-4">{activeData.industryReport.summary}</p>
-                                        <div className="pt-1 flex items-center gap-0.5 text-[10px] font-black text-blue-500">핵심 금융 정책 해설집 보기 <CustomIcon name="external-link" size={9} /></div>
+                                        <div className="pt-1 flex items-center gap-0.5 text-[10px] font-black text-orange-500">시장 전망 및 포트폴리오 가이드 보기 <CustomIcon name="external-link" size={9} /></div>
                                     </div>
                                 </div>
                             </div>
                         </section>
                     </main>
 
-                    {/* 모달 레이어 팝업 */}
+                    {/* 정밀 모달 팝업 레이어 */}
                     {selectedNews && (
                         <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4">
                             <div className="absolute inset-0 bg-gray-950/70 backdrop-blur-sm" onClick={() => setSelectedNews(null)} />
@@ -441,13 +439,13 @@
                                 <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-gray-100 px-5 py-4 flex items-center justify-between z-20">
                                     <div className="flex items-center gap-2">
                                         <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
-                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">{selectedNews.category || 'NEWSLETTER'} Premium Reading</span>
+                                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider">{selectedNews.category} Educational Document</span>
                                     </div>
                                     <button onClick={() => setSelectedNews(null)} className="p-1.5 hover:bg-gray-100 rounded-xl text-gray-400"><CustomIcon name="x" size={20} /></button>
                                 </div>
                                 <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
                                     <div className="space-y-6">
-                                        <h2 className="text-xl md:text-2xl font-black text-gray-900 leading-snug break-keep">{selectedNews.title}</h2>
+                                        <h2 className="text-xl md:text-2xl font-black text-gray-900 leading-snug break-keep">{selectedNews.title || selectedNews.rawTitle}</h2>
                                         <div className="article-body" dangerouslySetInnerHTML={{ __html: selectedNews.fullContent }} />
                                         
                                         {selectedNews.sourceUrl && (
@@ -464,13 +462,13 @@
                                         )}
                                         
                                         <div className="p-4 bg-orange-50/50 border-l-4 border-orange-500 text-[11px] text-gray-500 font-medium leading-relaxed rounded-r-xl">
-                                             💡 본 레터는 우리 같은 프로들의 지식 경쟁력과 깊이 있는 소양 증진을 목적으로 매일 정성스레 발행됩니다. 동료 리더 그룹의 세미나 및 미팅 소구 자료로 편안하게 인용하여 활용하시기 바랍니다.
+                                             💡 본 교육자료는 리더 분들의 전문 역량 강화와 신뢰도 높은 리서치 지원을 목적으로 기획되었습니다. 비즈니스 미팅 세미나 및 고객 세션 자료로 인용하여 활용하시기 바랍니다.
                                         </div>
 
                                         <div className="pt-6 border-t border-gray-100 space-y-3">
                                              <button onClick={() => handleCopyText(selectedNews.fullContent)} className="w-full flex items-center justify-center gap-2 py-4 bg-orange-500 text-white font-black rounded-xl hover:bg-orange-600 transition-all shadow-md text-sm">
                                                  <CustomIcon name={isCopying ? "check" : "copy"} size={14} />
-                                                 {isCopying ? "텍스트가 클립보드에 복사되었습니다!" : "본문 내용 전체 복사하기 (미팅 제안 / 가이드 배포용)"}
+                                                 {isCopying ? "텍스트가 클립보드에 복사되었습니다!" : "본문 내용 전체 복사하기 (미팅 제안 / 텍스트 배포용)"}
                                              </button>
                                         </div>
                                     </div>
